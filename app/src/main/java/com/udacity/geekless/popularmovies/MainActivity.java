@@ -1,5 +1,7 @@
 package com.udacity.geekless.popularmovies;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.GridView;
@@ -22,9 +24,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_poster_grid_layout);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new MoviesFragment())
+            fragmentTransaction
+                    .add(R.id.container, new MoviesGridFragment())
                     .commit();
         }
 //        Toast.makeText(this,"Test ",Toast.LENGTH_LONG).show();

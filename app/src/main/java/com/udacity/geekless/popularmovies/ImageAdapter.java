@@ -4,11 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -47,6 +49,7 @@ public class ImageAdapter extends BaseAdapter {
 //        imageView.setImageResource(mThumbIds[position]);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Picasso.with(mContext).load(mThumbs[position]).centerCrop().into(imageView);
+        Toast.makeText(mContext,"Test picasso",Toast.LENGTH_LONG).show();
         return imageView;
     }
 
