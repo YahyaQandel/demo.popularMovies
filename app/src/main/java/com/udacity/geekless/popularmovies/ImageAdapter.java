@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -16,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-
+    private static LayoutInflater inflater = null;
     // Keep all Images in array
     String ImageName = "iskara.jpg";
 
@@ -26,16 +27,17 @@ public class ImageAdapter extends BaseAdapter {
     public ImageAdapter(Context c,String [] ImagesIds){
         mContext = c;
         mThumbs = ImagesIds;
-        FixedThunbs[0]=R.drawable.iskara;
-        FixedThunbs[1]=R.drawable.iskara;
-        FixedThunbs[2]=R.drawable.iskara;
-        FixedThunbs[3]=R.drawable.iskara;
-        FixedThunbs[4]=R.drawable.iskara;
-        FixedThunbs[5]=R.drawable.iskara;
-        FixedThunbs[6]=R.drawable.iskara;
-        FixedThunbs[7]=R.drawable.iskara;
-        FixedThunbs[8]=R.drawable.iskara;
-        FixedThunbs[9]=R.drawable.iskara;
+        inflater = ( LayoutInflater )c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        FixedThunbs[0]=R.drawable.iskara;
+//        FixedThunbs[1]=R.drawable.iskara;
+//        FixedThunbs[2]=R.drawable.iskara;
+//        FixedThunbs[3]=R.drawable.iskara;
+//        FixedThunbs[4]=R.drawable.iskara;
+//        FixedThunbs[5]=R.drawable.iskara;
+//        FixedThunbs[6]=R.drawable.iskara;
+//        FixedThunbs[7]=R.drawable.iskara;
+//        FixedThunbs[8]=R.drawable.iskara;
+//        FixedThunbs[9]=R.drawable.iskara;
 
     }
 
@@ -51,9 +53,9 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
-//        imageView.setImageResource(mThumbIds[position]);
-//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        View rootView = inflater.inflate(R.layout.movie_poster_grid_layout, null);
+        ImageView imageView = (ImageView) rootView.findViewById(R.id.grid_item_image);
+        inflater.inflate(R.layout.movie_poster_grid_layout,null);
         Picasso.with(mContext).load(mThumbs[position]).centerCrop().into(imageView);
         Toast.makeText(mContext,"Test picasso",Toast.LENGTH_LONG).show();
 //        imageView.setImageResource(FixedThunbs[position]);
