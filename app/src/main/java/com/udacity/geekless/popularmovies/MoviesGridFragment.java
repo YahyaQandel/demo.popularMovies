@@ -61,9 +61,7 @@ public class MoviesGridFragment extends Fragment {
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.moviefragment, menu);
-        Toast.makeText(getActivity(),"Menu assigned ",Toast.LENGTH_LONG).show();
-//        FetchMoviesTask weatherTask = new FetchMoviesTask();
-//        weatherTask.execute();
+//        Toast.makeText(getActivity(),"Menu assigned ",Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -102,9 +100,12 @@ public class MoviesGridFragment extends Fragment {
         protected void onPostExecute(String[] result) {
             try {
                 GridView gridView = (GridView) rootView.findViewById(R.id.poster_grid_view);
+//                ImageAdapter imgAd = new ImageAdapter(getActivity(),result);
+//                int count = imgAd.getCount();
                 gridView.setAdapter(new ImageAdapter(getActivity(),result));
             }catch (Exception ex){
                 ex.printStackTrace();
+                Toast.makeText(getActivity(),ex.getMessage(),Toast.LENGTH_LONG);
             }
         }
     }

@@ -21,16 +21,22 @@ public class ImageAdapter extends BaseAdapter {
     String ImageName = "iskara.jpg";
 
     String [] mThumbs ;
-
+    int [] FixedThunbs ;
     // Constructor
     public ImageAdapter(Context c,String [] ImagesIds){
         mContext = c;
         mThumbs = ImagesIds;
-    }
+        FixedThunbs[0]=R.drawable.iskara;
+        FixedThunbs[1]=R.drawable.iskara;
+        FixedThunbs[2]=R.drawable.iskara;
+        FixedThunbs[3]=R.drawable.iskara;
+        FixedThunbs[4]=R.drawable.iskara;
+        FixedThunbs[5]=R.drawable.iskara;
+        FixedThunbs[6]=R.drawable.iskara;
+        FixedThunbs[7]=R.drawable.iskara;
+        FixedThunbs[8]=R.drawable.iskara;
+        FixedThunbs[9]=R.drawable.iskara;
 
-    @Override
-    public int getCount() {
-        return mThumbs.length;
     }
 
     @Override
@@ -40,17 +46,23 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return 1;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView = new ImageView(mContext);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
 //        imageView.setImageResource(mThumbIds[position]);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         Picasso.with(mContext).load(mThumbs[position]).centerCrop().into(imageView);
         Toast.makeText(mContext,"Test picasso",Toast.LENGTH_LONG).show();
+//        imageView.setImageResource(FixedThunbs[position]);
         return imageView;
+    }
+
+    @Override
+    public int getCount() {
+        return mThumbs.length;
     }
 
 }

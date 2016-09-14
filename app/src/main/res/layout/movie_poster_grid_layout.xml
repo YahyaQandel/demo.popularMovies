@@ -6,11 +6,12 @@
         <GridView
             android:id="@+id/poster_grid_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="324dp"
             android:numColumns="auto_fit"
             android:verticalSpacing="10dp"
             android:gravity="center"
             android:stretchMode="columnWidth" >
-
         </GridView>
+
+
 </FrameLayout>
