@@ -9,34 +9,14 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-//        public Integer[] mThumbIds = {
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle, R.drawable.eagle,
-//            R.drawable.eagle
-//    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.movie_poster_grid_layout);
+        setContentView(R.layout.activity_main);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (savedInstanceState == null) {
-            fragmentTransaction
-                    .add(R.id.container, new MoviesGridFragment())
-                    .commit();
-        }
-//        Toast.makeText(this,"Test ",Toast.LENGTH_LONG).show();
-//        try {
-//            GridView gridView = (GridView) findViewById(R.id.poster_grid_view);
-//            gridView.setAdapter(new ImageAdapter(this,mThumbs));
-//        }catch (Exception ex){
-//            ex.printStackTrace();
-//        }
+        fragmentTransaction
+                .replace(R.id.container, new MoviesGridFragment())
+                .commit();
     }
 }

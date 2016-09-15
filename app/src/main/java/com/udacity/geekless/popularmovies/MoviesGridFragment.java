@@ -39,6 +39,7 @@ import java.util.List;
 public class MoviesGridFragment extends Fragment {
 
     View rootView ;
+    GridView gridView;
 
     public MoviesGridFragment() {
         // Required empty public constructor
@@ -57,6 +58,7 @@ public class MoviesGridFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
+        gridView  = (GridView) rootView.findViewById(R.id.poster_grid_view);
         return inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -99,10 +101,9 @@ public class MoviesGridFragment extends Fragment {
         @Override
         protected void onPostExecute(String[] result) {
             try {
-                GridView gridView = (GridView) rootView.findViewById(R.id.poster_grid_view);
-//                ImageAdapter imgAd = new ImageAdapter(getActivity(),result);
+                ImageAdapter imgAd = new ImageAdapter(getActivity(),result);
 //                int count = imgAd.getCount();
-                gridView.setAdapter(new ImageAdapter(getActivity(),result));
+                gridView.setAdapter(imgAd);
             }catch (Exception ex){
                 ex.printStackTrace();
                 Toast.makeText(getActivity(),ex.getMessage(),Toast.LENGTH_LONG);

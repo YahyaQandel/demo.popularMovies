@@ -28,6 +28,7 @@ public class ImageAdapter extends BaseAdapter {
         mContext = c;
         mThumbs = ImagesIds;
         inflater = ( LayoutInflater )c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Toast.makeText(mContext,"Size : "+mThumbs.length,Toast.LENGTH_LONG).show();
 //        FixedThunbs[0]=R.drawable.iskara;
 //        FixedThunbs[1]=R.drawable.iskara;
 //        FixedThunbs[2]=R.drawable.iskara;
@@ -38,7 +39,6 @@ public class ImageAdapter extends BaseAdapter {
 //        FixedThunbs[7]=R.drawable.iskara;
 //        FixedThunbs[8]=R.drawable.iskara;
 //        FixedThunbs[9]=R.drawable.iskara;
-
     }
 
     @Override
@@ -53,9 +53,9 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View rootView = inflater.inflate(R.layout.movie_poster_grid_layout, null);
-        ImageView imageView = (ImageView) rootView.findViewById(R.id.grid_item_image);
-        inflater.inflate(R.layout.movie_poster_grid_layout,null);
+//        View rootView = inflater.inflate(R.layout.movie_trailer_image, null);
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
+//        inflater.inflate(R.layout.movie_poster_grid_layout,null);
         Picasso.with(mContext).load(mThumbs[position]).centerCrop().into(imageView);
         Toast.makeText(mContext,"Test picasso",Toast.LENGTH_LONG).show();
 //        imageView.setImageResource(FixedThunbs[position]);
