@@ -30,8 +30,11 @@ public class MoviesGridFragment extends Fragment {
 
     View rootView ;
     GridView gridView;
-    String FILTER_POPULAR = "popular";
-    String FILTER_TOP_RATED = "top_rated";
+    String MOVIES_FILTER_POPULAR = "popular";
+    String MOVIES_FILTER_TOP_RATED = "top_rated";
+    String MOVIES_FILTER_LATEST = "latest";
+    String MOVIES_FILTER_NOW_PLAYING = "now_playing";
+    String MOVIES_FILTER_UPCOMING = "upcoming";
     public MoviesGridFragment() {
         // Required empty public constructor
     }
@@ -51,7 +54,7 @@ public class MoviesGridFragment extends Fragment {
         rootView = inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
         gridView  = (GridView) rootView.findViewById(R.id.poster_grid_view);
         FetchMoviesTask weatherTask = new FetchMoviesTask();
-        weatherTask.execute(FILTER_POPULAR);
+        weatherTask.execute(MOVIES_FILTER_POPULAR);
         return rootView;
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -60,17 +63,30 @@ public class MoviesGridFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
+        FetchMoviesTask weatherTask = new FetchMoviesTask();
         int id = item.getItemId();
         if (id == R.id.action_popular) {
-            FetchMoviesTask weatherTask = new FetchMoviesTask();
-            weatherTask.execute(FILTER_POPULAR);
+            weatherTask.execute(MOVIES_FILTER_POPULAR);
             return true;
         }
         else if(id == R.id.action_toprated)
         {
-            FetchMoviesTask weatherTask = new FetchMoviesTask();
-            weatherTask.execute(FILTER_TOP_RATED);
+            weatherTask.execute(MOVIES_FILTER_TOP_RATED);
+            return true;
+        }
+        else if(id == R.id.action_now_playing)
+        {
+            weatherTask.execute(MOVIES_FILTER_NOW_PLAYING);
+            return true;
+        }
+        else if(id == R.id.action_latest)
+        {
+            weatherTask.execute(MOVIES_FILTER_LATEST);
+            return true;
+        }
+        else if(id == R.id.action_upcoming)
+        {
+            weatherTask.execute(MOVIES_FILTER_UPCOMING);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -90,10 +106,11 @@ public class MoviesGridFragment extends Fragment {
             try {
                 String MOVIES_BASE_URL =
                         "http://api.themoviedb.org/3/movie/";
-                MOVIES_BASE_URL +=params[0]+"?";
                 final String API_KEY_PARAM = "api_key";
                 final String API_FILTER_PARAM = params[0];
                 final String MOVIES_API_KEY="5e44fc66144f9fc395dbce0ede660dfe";
+                MOVIES_BASE_URL +=API_FILTER_PARAM +"?";
+
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY_PARAM, MOVIES_API_KEY)

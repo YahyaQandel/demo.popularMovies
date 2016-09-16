@@ -16,4 +16,17 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 
+    <item android:id="@+id/action_now_playing"
+        android:title="@string/action_now_playing"
+        app:showAsAction="never"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+    <item android:id="@+id/action_upcoming"
+        android:title="@string/action_upcoming"
+        app:showAsAction="never"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
+
 </menu>

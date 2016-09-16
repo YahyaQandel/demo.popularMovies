@@ -2,6 +2,9 @@
     <string name="app_name">Pop Movies</string>
     <string name="action_pop">Popular</string>
     <string name="action_top">Top rated</string>
+    <string name="action_upcoming">Upcoming</string>
+    <string name="action_latest">Latest</string>
+    <string name="action_now_playing">Now playing</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
