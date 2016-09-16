@@ -1,12 +1,105 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.udacity.geekless.popularmovies.MovieDetailsActivity">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="00dp"
+    android:paddingBottom="10dp">
 
-</RelativeLayout>
+    <TextView
+        android:id="@+id/movie_title_txtview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_vertical_margin"
+        android:textStyle="bold"
+        android:shadowColor="#009688"
+        android:shadowDx="-2"
+        android:shadowDy="2"
+        android:shadowRadius="0.01"
+        android:background="#009688"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:text="title"
+        android:textSize="25dp" />
+
+
+    <RelativeLayout
+        android:id="@+id/infoSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/movie_title_txtview"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/movie_backdrop_path_imgview"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:scaleType="fitXY"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="17dp"
+            android:contentDescription="Property Image" />
+
+        <TextView
+            android:id="@+id/movie_release_year_txtview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"
+            android:layout_toRightOf="@+id/movie_backdrop_path_imgview"
+            android:layout_below="@+id/movie_title_txtview"
+            android:text="Year"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/movie_rate_txtview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"
+            android:layout_toRightOf="@+id/movie_backdrop_path_imgview"
+            android:layout_below="@+id/movie_release_year_txtview"
+            android:text="rate"
+            android:textSize="15dp" />
+
+
+    </RelativeLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/detailsSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/infoSection"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_height="1dp"
+            android:id="@+id/spearator"
+            android:layout_below="@+id/movie_backdrop_path_imgview"
+            android:background="@android:color/darker_gray"/>
+
+        <TextView
+            android:id="@+id/movie_overview_txtview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            android:layout_below="@+id/spearator"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="18dp"
+            android:text="rate" />
+
+        <!--<TextView-->
+            <!--android:id="@+id/bedroom"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@id/movie_overview_txtview"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:text="xxx:" />-->
+
+
+    </RelativeLayout>
+
+</LinearLayout>

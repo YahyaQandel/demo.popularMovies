@@ -4,9 +4,16 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <item android:id="@+id/action_refresh"
-        android:title="@string/action_sort"
+    <item android:id="@+id/action_popular"
+        android:title="@string/action_pop"
         app:showAsAction="never"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
+
+    <item android:id="@+id/action_toprated"
+        android:title="@string/action_top"
+        app:showAsAction="never"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+
 </menu>
