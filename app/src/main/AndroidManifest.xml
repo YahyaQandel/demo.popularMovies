@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MovieDetailsActivity" />
-        <activity android:name=".ImageAdapterActivity"></activity>
+        <!--<activity android:name=".ImageAdapterActivity"></activity>-->
     </application>
 
 </manifest>
