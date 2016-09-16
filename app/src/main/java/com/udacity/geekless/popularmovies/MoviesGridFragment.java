@@ -60,6 +60,8 @@ public class MoviesGridFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
         gridView  = (GridView) rootView.findViewById(R.id.poster_grid_view);
+        FetchMoviesTask weatherTask = new FetchMoviesTask();
+        weatherTask.execute();
         return rootView;
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -70,8 +72,8 @@ public class MoviesGridFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchMoviesTask weatherTask = new FetchMoviesTask();
-            weatherTask.execute();
+//            FetchMoviesTask weatherTask = new FetchMoviesTask();
+//            weatherTask.execute();
             return true;
         }
         return super.onOptionsItemSelected(item);
