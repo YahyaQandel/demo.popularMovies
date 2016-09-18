@@ -5,11 +5,6 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent">
 
-    <item android:id="@+id/action_refresh"
-        android:icon="@drawable/reload"
-        android:title="refresh"
-        app:showAsAction="ifRoom|withText">
-    </item>
 
     <item android:id="@+id/action_popular"
         android:title="@string/action_pop"

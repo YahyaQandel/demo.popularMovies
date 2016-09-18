@@ -1,12 +1,9 @@
 package com.udacity.geekless.popularmovies;
 
-import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.GridView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         else
         {
             fragmentTransaction
-                    .replace(R.id.container, new OfflineActivity())
+                    .replace(R.id.container, new OfflineFragment())
                     .commit();
         }
 

@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class OfflineActivity extends Fragment {
+public class OfflineFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
