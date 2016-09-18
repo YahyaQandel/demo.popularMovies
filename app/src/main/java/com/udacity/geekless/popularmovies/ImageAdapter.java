@@ -33,6 +33,7 @@ public class ImageAdapter extends BaseAdapter {
         mContext = c;
         allMoviesArray = moviesArray;
         ArrayList<String> moviesPostersList  = new ArrayList<String>();
+//      fetching json data here in imageAdapater is important cuz we need to send Intent variables with movie attributes.
         try {
 
             for (int i = 0; i < allMoviesArray.length(); i++) {
@@ -75,6 +76,7 @@ public class ImageAdapter extends BaseAdapter {
 //                    String output =  allMoviesArray.getJSONObject(position).getString("title");
 //                    Toast.makeText(mContext, output, Toast.LENGTH_LONG).show();
                     Intent detailedMovieFragment = new Intent(mContext, MovieDetailsActivity.class);
+                    detailedMovieFragment.putExtra("id", allMoviesArray.getJSONObject(position).getString("id"));
                     detailedMovieFragment.putExtra("title", allMoviesArray.getJSONObject(position).getString("title"));
                     detailedMovieFragment.putExtra("backdrop_path", MOVIES_POSTER_BASE_URL+allMoviesArray.getJSONObject(position).getString("backdrop_path"));
                     detailedMovieFragment.putExtra("overview", allMoviesArray.getJSONObject(position).getString("overview"));

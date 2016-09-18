@@ -1,6 +1,7 @@
 package com.udacity.geekless.popularmovies;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,9 +31,10 @@ public class MoviesGridFragment extends Fragment {
 
     View rootView ;
     GridView gridView;
+    LayoutInflater mainLayoutInflater ;
+    ViewGroup mainViewGroup ;
     String MOVIES_FILTER_POPULAR = "popular";
     String MOVIES_FILTER_TOP_RATED = "top_rated";
-    String MOVIES_FILTER_LATEST = "latest";
     String MOVIES_FILTER_NOW_PLAYING = "now_playing";
     String MOVIES_FILTER_UPCOMING = "upcoming";
     public MoviesGridFragment() {
@@ -77,11 +79,6 @@ public class MoviesGridFragment extends Fragment {
         else if(id == R.id.action_now_playing)
         {
             weatherTask.execute(MOVIES_FILTER_NOW_PLAYING);
-            return true;
-        }
-        else if(id == R.id.action_latest)
-        {
-            weatherTask.execute(MOVIES_FILTER_LATEST);
             return true;
         }
         else if(id == R.id.action_upcoming)
