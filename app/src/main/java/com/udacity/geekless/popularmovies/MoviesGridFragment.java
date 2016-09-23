@@ -1,11 +1,10 @@
 package com.udacity.geekless.popularmovies;
 
-
-import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -26,13 +25,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MoviesGridFragment extends Fragment {
 
     View rootView ;
     GridView gridView;
-    LayoutInflater mainLayoutInflater ;
-    ViewGroup mainViewGroup ;
     String MOVIES_FILTER_POPULAR = "popular";
     String MOVIES_FILTER_TOP_RATED = "top_rated";
     String MOVIES_FILTER_NOW_PLAYING = "now_playing";
@@ -48,6 +46,7 @@ public class MoviesGridFragment extends Fragment {
         setHasOptionsMenu(true);
 
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +66,13 @@ public class MoviesGridFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         FetchMoviesTask weatherTask = new FetchMoviesTask();
         int id = item.getItemId();
+        if (id == R.id.action_favourite) {
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            ArrayList<Movie> movies = db.getAllMovies();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,movies);
+            gridView.setAdapter(imgAd);
+        }
         if (id == R.id.action_popular) {
             weatherTask.execute(MOVIES_FILTER_POPULAR);
             return true;
@@ -89,12 +95,12 @@ public class MoviesGridFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public class FetchMoviesTask extends AsyncTask<String, Void, JSONArray> {
+    public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
-        protected JSONArray doInBackground(String... params) {
+        protected ArrayList<Movie> doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
@@ -163,26 +169,42 @@ public class MoviesGridFragment extends Fragment {
 
         }
 
-        private JSONArray getMoviesArrayObjectsFromJson(String results)
+        private ArrayList<Movie> getMoviesArrayObjectsFromJson(String results)
         {
             ArrayList<String> moviesPosters = new ArrayList<String>();
             JSONArray moviesArray = null;
             JSONObject moviesJson = null;
+            final String MOVIES_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w500";
+            ArrayList<Movie> movies  = new ArrayList<Movie>();
             try {
                 final String MOVIES_PAGE_RESULTS = "results";
                  moviesJson = new JSONObject(results);
                  moviesArray = moviesJson.getJSONArray(MOVIES_PAGE_RESULTS);
+                for (int i = 0; i < moviesArray.length(); i++) {
+                    JSONObject oneMovieObject = moviesArray.getJSONObject(i);
+                    Movie movie = new Movie();
+                    movie.setID(Integer.parseInt(moviesArray.getJSONObject(i).getString("id")));
+                    movie.setTitle(moviesArray.getJSONObject(i).getString("title"));
+                    movie.setOverview(moviesArray.getJSONObject(i).getString("overview"));
+                    movie.setReleaseDate(moviesArray.getJSONObject(i).getString("release_date"));
+                    movie.setRate(moviesArray.getJSONObject(i).getString("vote_average"));
+                    movie.setPoster(MOVIES_POSTER_BASE_URL+moviesArray.getJSONObject(i).getString("poster_path"));
+                    movie.setBackpath(MOVIES_POSTER_BASE_URL+moviesArray.getJSONObject(i).getString("backdrop_path"));
+                    movies.add(movie);
+                }
+
             }catch (JSONException ex)
             {
                 ex.printStackTrace();
                 return null;
             }
-            return moviesArray;
+            return movies;
         }
         @Override
-        protected void onPostExecute(JSONArray result) {
+        protected void onPostExecute(ArrayList<Movie> result) {
             try {
-                ImageAdapter imgAd = new ImageAdapter(getActivity(),result);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,result);
                 gridView.setAdapter(imgAd);
             }catch (Exception ex){
                 ex.printStackTrace();

@@ -8,7 +8,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingTop="00dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    android:src="@drawable/add_favourite">
 
     <TextView
         android:id="@+id/movie_title_txtview"
@@ -21,7 +22,6 @@
         android:shadowDy="2"
         android:shadowRadius="0.01"
         android:background="#009688"
-        android:layout_margin="@dimen/activity_horizontal_margin"
         android:text="title"
         android:textSize="25dp" />
 
@@ -39,6 +39,7 @@
             android:layout_height="200dp"
             android:scaleType="fitXY"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="17dp"
             android:layout_marginLeft="17dp"
             android:contentDescription="Property Image" />
 
@@ -51,18 +52,32 @@
             android:layout_toRightOf="@+id/movie_backdrop_path_imgview"
             android:layout_below="@+id/movie_title_txtview"
             android:text="Year"
+            android:layout_marginTop="17dp"
             android:textSize="20dp" />
 
         <TextView
             android:id="@+id/movie_rate_txtview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
             android:textAlignment="center"
             android:layout_toRightOf="@+id/movie_backdrop_path_imgview"
             android:layout_below="@+id/movie_release_year_txtview"
             android:text="rate"
             android:textSize="15dp" />
+
+
+        <RelativeLayout
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="85dp"
+            android:layout_toRightOf="@+id/movie_backdrop_path_imgview"
+            android:layout_below="@+id/movie_backdrop_path_imgview">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/addToFav_imgview"
+                android:src="@drawable/add_favourite"/>
+        </RelativeLayout>
 
 
     </RelativeLayout>

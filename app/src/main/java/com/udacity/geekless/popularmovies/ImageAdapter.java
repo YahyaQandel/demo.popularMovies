@@ -1,18 +1,15 @@
 package com.udacity.geekless.popularmovies;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -24,34 +21,22 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private FragmentManager frgmntManager ;
     private static LayoutInflater inflater = null;
     final String MOVIES_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w500";
-    JSONArray allMoviesArray = null;
+    ArrayList<Movie> allMoviesArray = null;
     String [] moviesPostersArray ;
     // Constructor
-    public ImageAdapter(Context c,JSONArray moviesArray){
+    public ImageAdapter(Context c,FragmentManager f,ArrayList<Movie> moviesArray){
         mContext = c;
+        frgmntManager = f;
         allMoviesArray = moviesArray;
-        ArrayList<String> moviesPostersList  = new ArrayList<String>();
-//      fetching json data here in imageAdapater is important cuz we need to send Intent variables with movie attributes.
-        try {
-
-            for (int i = 0; i < allMoviesArray.length(); i++) {
-                JSONObject oneMovieObject = allMoviesArray.getJSONObject(i);
-                moviesPostersList.add(MOVIES_POSTER_BASE_URL + oneMovieObject.getString("poster_path"));
-            }
-             moviesPostersArray = new String[moviesPostersList.size()];
-            moviesPostersArray = moviesPostersList.toArray(moviesPostersArray);
-        }catch (JSONException ex)
-        {
-            ex.printStackTrace();
-        }
         inflater = ( LayoutInflater )c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public Object getItem(int position) {
-        return moviesPostersArray[position];
+        return allMoviesArray.get(position);
     }
 
     @Override
@@ -64,7 +49,7 @@ public class ImageAdapter extends BaseAdapter {
         convertView = inflater.inflate(R.layout.movie_trailer_image, null);
         ImageView imageView = (ImageView) convertView.findViewById(R.id.grid_item_image);
         try{
-            Picasso.with(mContext).load(moviesPostersArray[position]).into(imageView);
+            Picasso.with(mContext).load(allMoviesArray.get(position).getPoster()).into(imageView);
         }catch (Exception ex)
         {
             ex.printStackTrace();
@@ -75,15 +60,25 @@ public class ImageAdapter extends BaseAdapter {
                 try {
 //                    String output =  allMoviesArray.getJSONObject(position).getString("title");
 //                    Toast.makeText(mContext, output, Toast.LENGTH_LONG).show();
-                    Intent detailedMovieFragment = new Intent(mContext, MovieDetailsActivity.class);
-                    detailedMovieFragment.putExtra("id", allMoviesArray.getJSONObject(position).getString("id"));
-                    detailedMovieFragment.putExtra("title", allMoviesArray.getJSONObject(position).getString("title"));
-                    detailedMovieFragment.putExtra("backdrop_path", MOVIES_POSTER_BASE_URL+allMoviesArray.getJSONObject(position).getString("backdrop_path"));
-                    detailedMovieFragment.putExtra("overview", allMoviesArray.getJSONObject(position).getString("overview"));
-                    detailedMovieFragment.putExtra("release_date", allMoviesArray.getJSONObject(position).getString("release_date"));
-                    detailedMovieFragment.putExtra("vote_average", allMoviesArray.getJSONObject(position).getString("vote_average"));
 
-                    mContext.startActivity(detailedMovieFragment);
+//
+                    Bundle detailedMovieFragment = new Bundle();
+                    detailedMovieFragment.putString("id", String.valueOf(allMoviesArray.get(position).getID()));
+                    detailedMovieFragment.putString("title",allMoviesArray.get(position).getTitle());
+                    detailedMovieFragment.putString("backdrop_path",allMoviesArray.get(position).getBackpath());
+                    detailedMovieFragment.putString("overview",allMoviesArray.get(position).getOverview());
+                    detailedMovieFragment.putString("release_date", allMoviesArray.get(position).getReleasedate());
+                    detailedMovieFragment.putString("vote_average", allMoviesArray.get(position).getRate());
+                    detailedMovieFragment.putString("poster_path",allMoviesArray.get(position).getPoster());
+
+                    MovieDetailsFragment mvDetailsFrgment = new MovieDetailsFragment();
+                    mvDetailsFrgment.setArguments(detailedMovieFragment);
+                    FragmentManager fragmentManager = frgmntManager;
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction
+                            .replace(R.id.container, mvDetailsFrgment)
+                            .commit();
+//                    mContext.startActivity(detailedMovieFragment);
                 }catch (Exception e)
                 {
                     e.printStackTrace();
@@ -91,13 +86,18 @@ public class ImageAdapter extends BaseAdapter {
 
             }
         });
-
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Utils.showToast(mContext,"LOOOOOOOOOOOOOONG press");
+                return true;
+            } });
         return convertView;
     }
 
     @Override
     public int getCount() {
-        return moviesPostersArray.length;
+        return allMoviesArray.size();
     }
 
 }

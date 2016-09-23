@@ -4,13 +4,21 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,37 +41,91 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsFragment extends Fragment implements View.OnClickListener {
 
+    FragmentTransaction fragmentTransaction ;
     List<Review> arrayOfReviews;
     ListView listView;
     Activity mContext ;
+    View rootView ;
+    // movie details
+    Movie currentMovie ;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this;
-        setContentView(R.layout.activity_movie_details);
+        mContext = getActivity();
 
-        String movieID = getIntent().getExtras().getString("id");
-        String movieTitle = getIntent().getExtras().getString("title");
-        String movieBackDropPath = getIntent().getExtras().getString("backdrop_path");
-        String movieOverview = getIntent().getExtras().getString("overview");
-        String movieReleaseYear = getReleaseYearFromFullDate(getIntent().getExtras().getString("release_date"));
-        String movieRate = getIntent().getExtras().getString("vote_average");
+//        fragmentTransaction  = getActivity().getSupportFragmentManager().beginTransaction();
 
-        ImageView movie_backdrop_path_imgview = (ImageView) findViewById(R.id.movie_backdrop_path_imgview);
-        TextView movie_title_txtview = (TextView) findViewById(R.id.movie_title_txtview);
-        TextView movie_overview_txtview = (TextView) findViewById(R.id.movie_overview_txtview);
-        TextView movie_release_year_txtview = (TextView) findViewById(R.id.movie_release_year_txtview);
-        TextView movie_rate_txtview = (TextView) findViewById(R.id.movie_rate_txtview);
-        listView = (ListView) findViewById(R.id.reviews_listview);
+//        getView().setOnKeyListener( new View.OnKeyListener(){
+//            @Override
+//            public boolean onKey( View v, int keyCode, KeyEvent event ){
+//                if( keyCode == KeyEvent.KEYCODE_BACK ){
+//                    if(getFragmentManager().getBackStackEntryCount() != 0) {
+//                        getFragmentManager().popBackStack();
+//                    }
+//                    return true;
+//                }
+//                return false;
+//            }
+//        } );
+//    }
+
+//    @Override
+//    public void onBackPressed() {
+//
+    }
+
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        switch (keyCode) {
+//            case KeyEvent.KEYCODE_BACK:
+//                if(getFragmentManager().getBackStackEntryCount() != 0) {
+//                    getFragmentManager().popBackStack();
+//                    return true;
+//                }
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+//
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        rootView = inflater.inflate(R.layout.activity_movie_details, container, false);
+        String movieID =getArguments().getString("id");
+        String movieTitle = getArguments().getString("title");
+        String movieOverview = getArguments().getString("overview");
+        String movieReleaseYear = getArguments().getString("release_date");
+        String movieRate = getArguments().getString("vote_average");
+        String movieBackDropPath =getArguments().getString("backdrop_path");
+        String moviePoster =getArguments().getString("poster_path");
+
+        currentMovie = new Movie();
+        currentMovie.setID(Integer.parseInt(movieID));
+        currentMovie.setTitle(movieTitle);
+        currentMovie.setOverview(movieOverview);
+        currentMovie.setReleaseDate(movieReleaseYear);
+        currentMovie.setRate(movieRate);
+        currentMovie.setPoster(moviePoster);
+        currentMovie.setBackpath(movieBackDropPath);
+
+        ImageView movie_backdrop_path_imgview = (ImageView) rootView.findViewById(R.id.movie_backdrop_path_imgview);
+        TextView movie_title_txtview = (TextView) rootView.findViewById(R.id.movie_title_txtview);
+        TextView movie_overview_txtview = (TextView) rootView.findViewById(R.id.movie_overview_txtview);
+        TextView movie_release_year_txtview = (TextView) rootView.findViewById(R.id.movie_release_year_txtview);
+        TextView movie_rate_txtview = (TextView) rootView.findViewById(R.id.movie_rate_txtview);
+        listView = (ListView) rootView.findViewById(R.id.reviews_listview);
+        ImageView addToFavouriteImg = (ImageView) rootView.findViewById(R.id.addToFav_imgview);
+        addToFavouriteImg.setOnClickListener(this);
 
         try {
-            if (Utils.isNetworkAvailable(this)) {
-                Picasso.with(this).load(movieBackDropPath).into(movie_backdrop_path_imgview);
+            if (Utils.isNetworkAvailable(getActivity())) {
+                Picasso.with(getActivity()).load(movieBackDropPath).into(movie_backdrop_path_imgview);
                 new FetchMovieReview().execute(movieID);
             } else {
-                Utils.showToast(this, "No Network Connection!!!");
+                Utils.showToast(getActivity(), "No Network Connection!!!");
             }
         }catch (Exception ex)
         {
@@ -85,7 +147,31 @@ public class MovieDetailsActivity extends AppCompatActivity {
             }
 
         });
+        return rootView;
+    }
 
+    @Override
+    public void onClick(View v) {
+        try {
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            Movie already_inserted = db.getMovie(currentMovie.getID());
+            if(already_inserted!=null) {
+                Utils.showToast(getActivity(), "This movie already in your favourite list");
+            }
+            else {
+                db.addMovie(currentMovie);
+                Utils.showToast(getActivity(), "Movie added to favourite !!!");
+            }
+//            List<Movie> movies = db.getAllMovies();
+//            for (Movie mv : movies) {
+//                String toast_string = "Id: " + mv.getID() + " ,Title: " + mv.getTitle();
+//                Utils.showToast(getActivity(), toast_string);
+//            }
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+            // display movies in a toast
 
     }
 
@@ -97,7 +183,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pDialog = new ProgressDialog(MovieDetailsActivity.this);
+            pDialog = new ProgressDialog(mContext);
             pDialog.setMessage("Loading...");
             pDialog.show();
 

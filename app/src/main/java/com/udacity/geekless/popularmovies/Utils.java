@@ -31,7 +31,11 @@ public class Utils {
 
     public static void showToast(Activity activity , String msg)
     {
-        Toast.makeText(activity,msg,Toast.LENGTH_LONG).show();
+        Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show();
+    }
+    public static void showToast(Context activity , String msg)
+    {
+        Toast.makeText(activity,msg,Toast.LENGTH_SHORT).show();
     }
 
 }
