@@ -41,6 +41,7 @@
             android:scaleType="fitXY"
             android:layout_marginRight="10dp"
             android:layout_marginTop="17dp"
+            android:layout_marginBottom="30dp"
             android:layout_marginLeft="17dp"
             android:contentDescription="Property Image" />
 
@@ -93,23 +94,26 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="90dp"
             android:layout_marginBottom="10dp"
             android:layout_height="1dp"
             android:id="@+id/spearator"
             android:layout_below="@+id/movie_backdrop_path_imgview"
             android:background="@android:color/darker_gray"/>
 
-        <TextView
-            android:id="@+id/movie_overview_txtview"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_below="@+id/spearator"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="18dp"
-            android:text="description" />
-
+            android:layout_height="80dp">
+            <TextView
+                android:id="@+id/movie_overview_txtview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/spearator"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="18dp"
+                android:text="description" />
+        </ScrollView>
 
     </RelativeLayout>
 

@@ -189,6 +189,14 @@ public class MovieDetailsFragment extends Fragment {
                 return false;
             }
         });
+        movie_overview_txtview.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent event)
+            {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
         return rootView;
     }
 
@@ -309,6 +317,8 @@ public class MovieDetailsFragment extends Fragment {
 
             if (null == result || result.size() == 0) {
                   Utils.showToast(mContext,"There are no reviews for this movie !!!");
+                  TextView reviewTXT = (TextView) rootView.findViewById(R.id.movie_reviews_separator);
+                  reviewTXT.setVisibility(View.GONE);
             } else {
 
                 ReviewAdapter objAdapter = new ReviewAdapter(mContext,
@@ -436,6 +446,8 @@ public class MovieDetailsFragment extends Fragment {
 
             if (null == result || result.size() == 0) {
                 Utils.showToast(mContext,"There are no trailers for this movie !!!");
+                TextView trailerTXT = (TextView) rootView.findViewById(R.id.movie_trailer_separator);
+                trailerTXT.setVisibility(View.GONE);
             } else {
 
                 TrailerAdapter objAdapter = new TrailerAdapter(mContext,
