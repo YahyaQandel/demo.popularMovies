@@ -5,7 +5,7 @@
     android:background="@drawable/list_bg" >
 
     <ImageView
-        android:id="@+id/revierwe_imgview"
+        android:id="@+id/trailer_imgview"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerVertical="true"
@@ -14,12 +14,12 @@
         android:padding="3dp" />
 
     <TextView
-        android:id="@+id/reviewtitle_txtview"
+        android:id="@+id/trailer_name_txtview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@+id/reviewlink_txtview"
-        android:layout_toRightOf="@+id/revierwe_imgview"
+        android:layout_toLeftOf="@+id/trailer_size_txtview"
+        android:layout_toRightOf="@+id/trailer_imgview"
         android:maxLines="2"
         android:text="title"
         android:textColor="@android:color/black"
@@ -27,11 +27,11 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/reviewdesc_txtview"
+        android:id="@+id/trailer_site_txtview"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/reviewtitle_txtview"
-        android:layout_toRightOf="@+id/revierwe_imgview"
+        android:layout_below="@+id/trailer_name_txtview"
+        android:layout_toRightOf="@+id/trailer_imgview"
         android:ellipsize="end"
         android:maxLines="3"
         android:text="desc"
@@ -39,14 +39,14 @@
         android:textSize="13dip" />
 
     <TextView
-        android:id="@+id/reviewlink_txtview"
+        android:id="@+id/trailer_size_txtview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dip"
         android:text="date"
-        android:visibility="gone"
+        android:visibility="visible"
         android:textColor="@android:color/black"
         android:textSize="12dip" />
 
