@@ -1,10 +1,14 @@
 package com.udacity.geekless.popularmovies;
 
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.view.ContextThemeWrapper;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +29,7 @@ public class ImageAdapter extends BaseAdapter {
     private static LayoutInflater inflater = null;
     final String MOVIES_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w500";
     ArrayList<Movie> allMoviesArray = null;
+    enum MOVIE_IN_FAVOURITE_LIST {YES,NO};
     String [] moviesPostersArray ;
     // Constructor
     public ImageAdapter(Context c,FragmentManager f,ArrayList<Movie> moviesArray){
@@ -58,10 +63,6 @@ public class ImageAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 try {
-//                    String output =  allMoviesArray.getJSONObject(position).getString("title");
-//                    Toast.makeText(mContext, output, Toast.LENGTH_LONG).show();
-
-//
                     Bundle detailedMovieFragment = new Bundle();
                     detailedMovieFragment.putString("id", String.valueOf(allMoviesArray.get(position).getID()));
                     detailedMovieFragment.putString("title",allMoviesArray.get(position).getTitle());
@@ -89,9 +90,45 @@ public class ImageAdapter extends BaseAdapter {
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Utils.showToast(mContext,"LOOOOOOOOOOOOOONG press");
+                String MSG_ADD = "Add this movie to your favourites ?! ";
+                String MSG_REMV = "Delete this movie from your favourites ?! ";
+                String Dialgo_msg ;int choice = 0;
+                final DatabaseHandler db = new DatabaseHandler(mContext.getApplicationContext());
+                final Movie already_inserted = db.getMovie(allMoviesArray.get(position).getID());
+                if(already_inserted!=null) {
+                   Dialgo_msg = MSG_REMV;
+                }
+                else {
+//                    db.addMovie(currentMovie);
+//                    Utils.showToast(getActivity(), "Movie added to favourite !!!");
+                    Dialgo_msg = MSG_ADD;
+                }
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                if(already_inserted!=null) {
+                                    db.deleteContact(allMoviesArray.get(position));
+                                    Utils.showToast(mContext, "Movie deleted !!!");
+                                }else{
+                                    db.addMovie(allMoviesArray.get(position));
+                                    Utils.showToast(mContext, "Movie added  !!!");
+                                }
+                                break;
+                            case DialogInterface.BUTTON_NEGATIVE:
+
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(mContext, R.style.AlertDialogCustom));
+                builder.setTitle(Html.fromHtml("<font color='#FFFFFF'><u>Popular Movies<u></font>"));
+                builder.setMessage(Html.fromHtml("<font color='#FFFFFF'>"+Dialgo_msg+"</font>")).setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
                 return true;
-            } });
+         }});
         return convertView;
     }
 

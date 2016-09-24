@@ -75,8 +75,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/addToFav_imgview"
-                android:src="@drawable/add_favourite"/>
+                android:id="@+id/addToFav_imgview" />
         </RelativeLayout>
 
 

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.Image;
 import android.net.Uri;
@@ -48,13 +49,14 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
     ListView listView;
     Activity mContext ;
     View rootView ;
+    DatabaseHandler db ;
+    ImageView addToFavouriteImg;
     // movie details
-    Movie currentMovie ;
+    Movie currentMovie ,already_inserted;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-
 //        fragmentTransaction  = getActivity().getSupportFragmentManager().beginTransaction();
 
 //        getView().setOnKeyListener( new View.OnKeyListener(){
@@ -117,8 +119,19 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         TextView movie_release_year_txtview = (TextView) rootView.findViewById(R.id.movie_release_year_txtview);
         TextView movie_rate_txtview = (TextView) rootView.findViewById(R.id.movie_rate_txtview);
         listView = (ListView) rootView.findViewById(R.id.reviews_listview);
-        ImageView addToFavouriteImg = (ImageView) rootView.findViewById(R.id.addToFav_imgview);
-        addToFavouriteImg.setOnClickListener(this);
+//        addToFavouriteImg = (ImageView) rootView.findViewById(R.id.addToFav_imgview);
+//        addToFavouriteImg.setOnClickListener(this);
+//        db = new DatabaseHandler(getActivity().getApplicationContext());
+//        already_inserted = db.getMovie(currentMovie.getID());
+//        if(already_inserted!=null) {
+//            addToFavouriteImg.setBackgroundResource(R.drawable.minus);
+//            addToFavouriteImg.setTag(R.drawable.minus);
+//        }
+//        else
+//        {
+//            addToFavouriteImg.setBackgroundResource(R.drawable.plus);
+//            addToFavouriteImg.setTag(R.drawable.plus);
+//        }
 
         try {
             if (Utils.isNetworkAvailable(getActivity())) {
@@ -150,29 +163,29 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         return rootView;
     }
 
-    @Override
+//    @Override
     public void onClick(View v) {
-        try {
-            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-            Movie already_inserted = db.getMovie(currentMovie.getID());
-            if(already_inserted!=null) {
-                Utils.showToast(getActivity(), "This movie already in your favourite list");
-            }
-            else {
-                db.addMovie(currentMovie);
-                Utils.showToast(getActivity(), "Movie added to favourite !!!");
-            }
-//            List<Movie> movies = db.getAllMovies();
-//            for (Movie mv : movies) {
-//                String toast_string = "Id: " + mv.getID() + " ,Title: " + mv.getTitle();
-//                Utils.showToast(getActivity(), toast_string);
+//        try {
+//            already_inserted = db.getMovie(currentMovie.getID());
+//            if(already_inserted!=null) {
+//                if(addToFavouriteImg.getTag()==R.drawable.plus) {
+//                    Utils.showToast(getActivity(), "This movie already in your favourite list");
+//                }
+//                else if(addToFavouriteImg.getTag()==R.drawable.minus)
+//                {
+//                    db.deleteContact(currentMovie);
+//                }
 //            }
-        }catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-            // display movies in a toast
-
+//            else {
+//                db.addMovie(currentMovie);
+//                Utils.showToast(getActivity(), "Movie added to favourite !!!");
+//            }
+//
+//        }catch (Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
+//            // display movies in a toast
     }
 
     class FetchMovieReview extends AsyncTask<String, Void, List<Review>> {

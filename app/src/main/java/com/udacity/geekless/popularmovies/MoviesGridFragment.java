@@ -6,13 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,12 +42,10 @@ public class MoviesGridFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
 
@@ -93,7 +94,23 @@ public class MoviesGridFragment extends Fragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+
     }
+//    @Override
+//    public void onCreateContextMenu(ContextMenu menu, View v,
+//                                    ContextMenu.ContextMenuInfo menuInfo) {
+//        super.onCreateContextMenu(menu, v, menuInfo);
+//        menu.setHeaderTitle("Context Menu");
+//        menu.add(0, v.getId(), 0, "Action 1");
+//        menu.add(0, v.getId(), 0, "Action 2");
+//    }
+//    @Override
+//    public boolean onContextItemSelected(MenuItem item) {
+//        if(item.getTitle()=="Action 1"){ Toast.makeText(getActivity(), "function 1 called", Toast.LENGTH_SHORT).show();}
+//        else if(item.getTitle()=="Action 2"){Toast.makeText(getActivity(), "function 2 called", Toast.LENGTH_SHORT).show();}
+//        else {return false;}
+//        return true;
+//    }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
 
@@ -206,11 +223,13 @@ public class MoviesGridFragment extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,result);
                 gridView.setAdapter(imgAd);
+                registerForContextMenu(gridView);
             }catch (Exception ex){
                 ex.printStackTrace();
 
             }
         }
+
     }
 
 }
