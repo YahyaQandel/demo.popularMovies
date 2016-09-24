@@ -111,6 +111,8 @@ public class ImageAdapter extends BaseAdapter {
                                 if(already_inserted!=null) {
                                     db.deleteContact(allMoviesArray.get(position));
                                     Utils.showToast(mContext, "Movie deleted !!!");
+                                    allMoviesArray = db.getAllMovies();
+                                    notifyDataSetChanged();
 
                                 }else{
                                     db.addMovie(allMoviesArray.get(position));

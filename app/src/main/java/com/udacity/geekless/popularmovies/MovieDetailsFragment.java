@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MovieDetailsFragment extends Fragment implements View.OnClickListener {
+public class MovieDetailsFragment extends Fragment {
 
     FragmentTransaction fragmentTransaction ;
     List<Review> arrayOfReviews;
@@ -126,20 +126,6 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         TextView movie_rate_txtview = (TextView) rootView.findViewById(R.id.movie_rate_txtview);
         review_listView = (ListView) rootView.findViewById(R.id.reviews_listview);
         trailers_listview = (ListView) rootView.findViewById(R.id.trailers_listview);
-//        addToFavouriteImg = (ImageView) rootView.findViewById(R.id.addToFav_imgview);
-//        addToFavouriteImg.setOnClickListener(this);
-//        db = new DatabaseHandler(getActivity().getApplicationContext());
-//        already_inserted = db.getMovie(currentMovie.getID());
-//        if(already_inserted!=null) {
-//            addToFavouriteImg.setBackgroundResource(R.drawable.minus);
-//            addToFavouriteImg.setTag(R.drawable.minus);
-//        }
-//        else
-//        {
-//            addToFavouriteImg.setBackgroundResource(R.drawable.plus);
-//            addToFavouriteImg.setTag(R.drawable.plus);
-//        }
-
         try {
             if (Utils.isNetworkAvailable(getActivity())) {
                 Picasso.with(getActivity()).load(movieBackDropPath).into(movie_backdrop_path_imgview);
@@ -205,30 +191,7 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
         });
         return rootView;
     }
-//    @Override
-    public void onClick(View v) {
-//        try {
-//            already_inserted = db.getMovie(currentMovie.getID());
-//            if(already_inserted!=null) {
-//                if(addToFavouriteImg.getTag()==R.drawable.plus) {
-//                    Utils.showToast(getActivity(), "This movie already in your favourite list");
-//                }
-//                else if(addToFavouriteImg.getTag()==R.drawable.minus)
-//                {
-//                    db.deleteContact(currentMovie);
-//                }
-//            }
-//            else {
-//                db.addMovie(currentMovie);
-//                Utils.showToast(getActivity(), "Movie added to favourite !!!");
-//            }
-//
-//        }catch (Exception ex)
-//        {
-//            ex.printStackTrace();
-//        }
-//            // display movies in a toast
-    }
+
 
     class FetchMovieReview extends AsyncTask<String, Void, List<Review>> {
         private final String LOG_TAG = FetchMovieReview.class.getSimpleName();
