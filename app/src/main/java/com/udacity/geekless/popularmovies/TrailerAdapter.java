@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class TrailerAdapter extends ArrayAdapter<Trailer> {
@@ -30,6 +32,7 @@ public class TrailerAdapter extends ArrayAdapter<Trailer> {
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
         ViewHolder holder;
+        String THUMBNAIL_LINK = "http://img.youtube.com/vi/";
         if (view == null) {
             LayoutInflater inflater = (LayoutInflater) activity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -49,6 +52,7 @@ public class TrailerAdapter extends ArrayAdapter<Trailer> {
         holder.name = (TextView) view.findViewById(R.id.trailer_name_txtview);
         holder.site = (TextView) view.findViewById(R.id.trailer_site_txtview);
         holder.size = (TextView) view.findViewById(R.id.trailer_size_txtview);
+
         holder.imgView = (ImageView) view.findViewById(R.id.trailer_imgview);
 
         if (holder.name != null && null != objBean.getName()
@@ -63,8 +67,18 @@ public class TrailerAdapter extends ArrayAdapter<Trailer> {
                 && objBean.getSize().trim().length() > 0) {
             holder.size.setText(objBean.getSize());
         }
-        holder.imgView.setImageResource(R.drawable.video);
 
+        holder.imgView.setImageResource(R.drawable.video);
+        try {
+            if (Utils.isNetworkAvailable(activity)) {
+                Picasso.with(activity).load(THUMBNAIL_LINK+objBean.getKey()+"/0.jpg").into(holder.imgView);
+            } else {
+                Utils.showToast(activity, "No Network Connection!!!");
+            }
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
         return view;
     }
 

@@ -11,11 +11,16 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,47 +57,45 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
     ListView review_listView , trailers_listview;
     Activity mContext ;
     View rootView ;
-    DatabaseHandler db ;
-    ImageView addToFavouriteImg;
+    ShareActionProvider mShareActionProvider;
     // movie details
     Movie currentMovie ,already_inserted;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
-//        fragmentTransaction  = getActivity().getSupportFragmentManager().beginTransaction();
-
-//        getView().setOnKeyListener( new View.OnKeyListener(){
-//            @Override
-//            public boolean onKey( View v, int keyCode, KeyEvent event ){
-//                if( keyCode == KeyEvent.KEYCODE_BACK ){
-//                    if(getFragmentManager().getBackStackEntryCount() != 0) {
-//                        getFragmentManager().popBackStack();
-//                    }
-//                    return true;
-//                }
-//                return false;
-//            }
-//        } );
-//    }
-
-//    @Override
-//    public void onBackPressed() {
+        setHasOptionsMenu(true);
 //
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        switch (keyCode) {
-//            case KeyEvent.KEYCODE_BACK:
-//                if(getFragmentManager().getBackStackEntryCount() != 0) {
-//                    getFragmentManager().popBackStack();
-//                    return true;
-//                }
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-//
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.detail_menu, menu);
+
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        mShareActionProvider =
+                (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+
+    }
+    private Intent createShareMovieIntent() {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                    shareIntent.setType("text/plain");
+                    String movieShareString = currentMovie.getTitle() + " \n#popularMovies\n";
+                    movieShareString+="https://www.youtube.com/embed/"+arrayofTrailers.get(0).getKey();
+                    try {
+                        shareIntent.putExtra(Intent.EXTRA_TEXT,movieShareString);
+                    }catch (Exception ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                    return shareIntent;
+                }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -481,6 +484,11 @@ public class MovieDetailsFragment extends Fragment implements View.OnClickListen
                     ex.printStackTrace();
                 }
 
+            }
+            if (mShareActionProvider != null ) {
+                mShareActionProvider.setShareIntent(createShareMovieIntent());
+            } else {
+                Utils.showToast(getActivity(),"Share Action Provider is null?");
             }
 
         }

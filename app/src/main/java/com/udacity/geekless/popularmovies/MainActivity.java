@@ -17,20 +17,23 @@ public class MainActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        if (Utils.isNetworkAvailable(this)) {
-            fragmentTransaction
-                    .replace(R.id.container, new MoviesGridFragment())
-                    .commit();
-        }
-        else
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+            fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            if (Utils.isNetworkAvailable(this)) {
+                fragmentTransaction
+                        .replace(R.id.container, new MoviesGridFragment())
+                        .commit();
+            } else {
+                fragmentTransaction
+                        .replace(R.id.container, new OfflineFragment())
+                        .commit();
+            }
+        }catch (Exception ex)
         {
-            fragmentTransaction
-                    .replace(R.id.container, new OfflineFragment())
-                    .commit();
+            ex.printStackTrace();
         }
 
     }

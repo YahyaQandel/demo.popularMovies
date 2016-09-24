@@ -7,7 +7,7 @@
     <ImageView
         android:id="@+id/trailer_imgview"
         android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:layout_centerVertical="true"
         android:layout_margin="5dp"
         android:background="#444"

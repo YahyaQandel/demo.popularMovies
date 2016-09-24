@@ -1,5 +1,6 @@
 package com.udacity.geekless.popularmovies;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -113,8 +114,18 @@ public class MoviesGridFragment extends Fragment {
 //    }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-
+        ProgressDialog pDialog;
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pDialog = new ProgressDialog(getActivity());
+            pDialog.setMessage("Loading...");
+            pDialog.show();
+
+        }
 
         @Override
         protected ArrayList<Movie> doInBackground(String... params) {
@@ -219,6 +230,9 @@ public class MoviesGridFragment extends Fragment {
         }
         @Override
         protected void onPostExecute(ArrayList<Movie> result) {
+            if (null != pDialog && pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
             try {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,result);

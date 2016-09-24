@@ -6,7 +6,7 @@
     <string name="action_upcoming">Upcoming</string>
     <string name="action_latest">Latest</string>
     <string name="action_now_playing">Now playing</string>
-
+    <string name="action_share">Share</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_zz">zzActivity</string>
