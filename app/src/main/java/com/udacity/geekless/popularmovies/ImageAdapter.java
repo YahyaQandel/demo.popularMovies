@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -76,10 +77,13 @@ public class ImageAdapter extends BaseAdapter {
                     mvDetailsFrgment.setArguments(detailedMovieFragment);
                     FragmentManager fragmentManager = frgmntManager;
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    int detailed_fragment_id = R.id.container;
+                    if(MainActivity.two_panels){
+                        detailed_fragment_id = R.id.fl2;
+                    }
                     fragmentTransaction
-                            .replace(R.id.container, mvDetailsFrgment)
+                            .replace(detailed_fragment_id, mvDetailsFrgment)
                             .commit();
-//                    mContext.startActivity(detailedMovieFragment);
                 }catch (Exception e)
                 {
                     e.printStackTrace();

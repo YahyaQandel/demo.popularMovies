@@ -86,13 +86,14 @@ public class MovieDetailsFragment extends Fragment {
                     shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
                     shareIntent.setType("text/plain");
                     String movieShareString = currentMovie.getTitle() + " \n#popularMovies\n";
-                    movieShareString+="https://www.youtube.com/embed/"+arrayofTrailers.get(0).getKey();
                     try {
-                        shareIntent.putExtra(Intent.EXTRA_TEXT,movieShareString);
+                        movieShareString+="https://www.youtube.com/embed/"+arrayofTrailers.get(0).getKey();
+
                     }catch (Exception ex)
                     {
                         ex.printStackTrace();
                     }
+                    shareIntent.putExtra(Intent.EXTRA_TEXT,movieShareString);
                     return shareIntent;
                 }
 

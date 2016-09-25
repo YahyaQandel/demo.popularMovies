@@ -9,11 +9,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.FrameLayout;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static boolean two_panels = false;
     FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
             fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            FrameLayout flpanel2 = (FrameLayout) findViewById(R.id.fl2);
+            if(flpanel2!=null){
+                two_panels=true;
+            }
             if (Utils.isNetworkAvailable(this)) {
                 fragmentTransaction
                         .replace(R.id.container, new MoviesGridFragment())
