@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -73,46 +74,71 @@ public class MoviesGridFragment extends Fragment {
             ArrayList<Movie> movies = db.getAllMovies();
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,movies);
-            gridView.setAdapter(imgAd);
+            try {
+                gridView.setAdapter(imgAd);
+            }catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
         }
         if (id == R.id.action_popular) {
-            weatherTask.execute(MOVIES_FILTER_POPULAR);
+            if (Utils.isNetworkAvailable(getActivity())) {
+                weatherTask.execute(MOVIES_FILTER_POPULAR);
+            }
+            else
+            {
+                Utils.showToast(getActivity(), "No Network Connection!!!");
+//                goToOfflineMode();
+            }
             return true;
         }
         else if(id == R.id.action_toprated)
         {
-            weatherTask.execute(MOVIES_FILTER_TOP_RATED);
+            if (Utils.isNetworkAvailable(getActivity())) {
+                weatherTask.execute(MOVIES_FILTER_TOP_RATED);
+            }
+            else
+            {
+                Utils.showToast(getActivity(), "No Network Connection!!!");
+//                goToOfflineMode();
+            }
             return true;
         }
         else if(id == R.id.action_now_playing)
         {
-            weatherTask.execute(MOVIES_FILTER_NOW_PLAYING);
+            if (Utils.isNetworkAvailable(getActivity())) {
+                weatherTask.execute(MOVIES_FILTER_NOW_PLAYING);
+            }
+            else
+            {
+                Utils.showToast(getActivity(), "No Network Connection!!!");
+//                goToOfflineMode();
+            }
             return true;
         }
         else if(id == R.id.action_upcoming)
         {
-            weatherTask.execute(MOVIES_FILTER_UPCOMING);
+            if (Utils.isNetworkAvailable(getActivity())) {
+                weatherTask.execute(MOVIES_FILTER_UPCOMING);
+            }
+            else
+            {
+                Utils.showToast(getActivity(), "No Network Connection!!!");
+//                goToOfflineMode();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
 
     }
-//    @Override
-//    public void onCreateContextMenu(ContextMenu menu, View v,
-//                                    ContextMenu.ContextMenuInfo menuInfo) {
-//        super.onCreateContextMenu(menu, v, menuInfo);
-//        menu.setHeaderTitle("Context Menu");
-//        menu.add(0, v.getId(), 0, "Action 1");
-//        menu.add(0, v.getId(), 0, "Action 2");
-//    }
-//    @Override
-//    public boolean onContextItemSelected(MenuItem item) {
-//        if(item.getTitle()=="Action 1"){ Toast.makeText(getActivity(), "function 1 called", Toast.LENGTH_SHORT).show();}
-//        else if(item.getTitle()=="Action 2"){Toast.makeText(getActivity(), "function 2 called", Toast.LENGTH_SHORT).show();}
-//        else {return false;}
-//        return true;
-//    }
-
+    private void goToOfflineMode()
+    {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction
+                .replace(R.id.container, new OfflineFragment())
+                .commit();
+    }
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
         ProgressDialog pDialog;
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
@@ -238,6 +264,12 @@ public class MoviesGridFragment extends Fragment {
                 ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,result);
                 gridView.setAdapter(imgAd);
                 registerForContextMenu(gridView);
+//               if(MainActivity.two_panels) {
+//                    gridView.requestFocusFromTouch();
+//                    gridView.setSelection(0);
+//                    gridView.performItemClick(gridView,0,R.id.poster_grid_view);
+//                    imgAd.notifyDataSetChanged();
+//                }
             }catch (Exception ex){
                 ex.printStackTrace();
 

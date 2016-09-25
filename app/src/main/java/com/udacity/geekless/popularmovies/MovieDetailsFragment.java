@@ -59,7 +59,9 @@ public class MovieDetailsFragment extends Fragment {
     View rootView ;
     ShareActionProvider mShareActionProvider;
     // movie details
-    Movie currentMovie ,already_inserted;
+    Movie currentMovie ;
+    TextView reviewTXT ;
+    TextView trailerTXT;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,6 +127,8 @@ public class MovieDetailsFragment extends Fragment {
         TextView movie_overview_txtview = (TextView) rootView.findViewById(R.id.movie_overview_txtview);
         TextView movie_release_year_txtview = (TextView) rootView.findViewById(R.id.movie_release_year_txtview);
         TextView movie_rate_txtview = (TextView) rootView.findViewById(R.id.movie_rate_txtview);
+        reviewTXT =  (TextView) rootView.findViewById(R.id.movie_reviews_separator);
+        trailerTXT =  (TextView) rootView.findViewById(R.id.movie_trailer_separator);
         review_listView = (ListView) rootView.findViewById(R.id.reviews_listview);
         trailers_listview = (ListView) rootView.findViewById(R.id.trailers_listview);
         try {
@@ -134,6 +138,9 @@ public class MovieDetailsFragment extends Fragment {
                 new FetchMovieTrailer().execute(movieID);
             } else {
                 Utils.showToast(getActivity(), "No Network Connection!!!");
+                reviewTXT.setVisibility(View.GONE);
+                trailerTXT.setVisibility(View.GONE);
+                movie_backdrop_path_imgview.setImageResource(R.drawable.movie);
             }
         }catch (Exception ex)
         {
@@ -318,7 +325,6 @@ public class MovieDetailsFragment extends Fragment {
 
             if (null == result || result.size() == 0) {
                   Utils.showToast(mContext,"There are no reviews for this movie !!!");
-                  TextView reviewTXT = (TextView) rootView.findViewById(R.id.movie_reviews_separator);
                   reviewTXT.setVisibility(View.GONE);
             } else {
 
@@ -447,7 +453,7 @@ public class MovieDetailsFragment extends Fragment {
 
             if (null == result || result.size() == 0) {
                 Utils.showToast(mContext,"There are no trailers for this movie !!!");
-                TextView trailerTXT = (TextView) rootView.findViewById(R.id.movie_trailer_separator);
+
                 trailerTXT.setVisibility(View.GONE);
             } else {
 
