@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GridItemListener{
     public static boolean two_panels = false;
     FragmentManager fragmentManager;
     @Override
@@ -61,5 +61,35 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+    }
+
+    @Override
+    public void onItemClicked(Movie movie) {
+        if(two_panels){
+            Bundle detailedMovieFragment = new Bundle();
+            detailedMovieFragment.putString("id", String.valueOf(movie.getID()));
+            detailedMovieFragment.putString("title",movie.getTitle());
+            detailedMovieFragment.putString("backdrop_path",movie.getBackpath());
+            detailedMovieFragment.putString("overview",movie.getOverview());
+            detailedMovieFragment.putString("release_date", movie.getReleasedate());
+            detailedMovieFragment.putString("vote_average", movie.getRate());
+            detailedMovieFragment.putString("poster_path",movie.getPoster());
+            FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction
+                            .replace(R.id.detailedContainer, new MovieDetailsFragment())
+                            .commit();
+
+        }
+        else {
+            Intent detailedMovie = new Intent(this,MovieDetailsActivity.class);
+            detailedMovie.putExtra("id", String.valueOf(movie.getID()));
+            detailedMovie.putExtra("title",movie.getTitle());
+            detailedMovie.putExtra("backdrop_path",movie.getBackpath());
+            detailedMovie.putExtra("overview",movie.getOverview());
+            detailedMovie.putExtra("release_date", movie.getReleasedate());
+            detailedMovie.putExtra("poster_path",movie.getPoster());
+            startActivity(detailedMovie);
+        }
     }
 }

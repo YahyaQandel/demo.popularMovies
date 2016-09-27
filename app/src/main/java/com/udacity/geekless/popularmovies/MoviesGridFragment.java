@@ -35,6 +35,7 @@ import java.util.List;
 public class MoviesGridFragment extends Fragment {
 
     View rootView ;
+    ProgressDialog pDialog;
     GridView gridView;
     String MOVIES_FILTER_POPULAR = "popular";
     String MOVIES_FILTER_TOP_RATED = "top_rated";
@@ -54,6 +55,7 @@ public class MoviesGridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v("3m karim","aho sad2tny");
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
         gridView  = (GridView) rootView.findViewById(R.id.poster_grid_view);
@@ -66,6 +68,14 @@ public class MoviesGridFragment extends Fragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        if (null != pDialog && pDialog.isShowing()) {
+            pDialog.dismiss();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         FetchMoviesTask weatherTask = new FetchMoviesTask();
         int id = item.getItemId();
@@ -73,7 +83,7 @@ public class MoviesGridFragment extends Fragment {
             DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
             ArrayList<Movie> movies = db.getAllMovies();
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,movies);
+            ImageAdapter imgAd = new ImageAdapter(getActivity(),movies);
             try {
                 gridView.setAdapter(imgAd);
             }catch (Exception ex)
@@ -140,7 +150,6 @@ public class MoviesGridFragment extends Fragment {
                 .commit();
     }
     public class FetchMoviesTask extends AsyncTask<String, Void, ArrayList<Movie>> {
-        ProgressDialog pDialog;
         private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         @Override
@@ -148,7 +157,7 @@ public class MoviesGridFragment extends Fragment {
             super.onPreExecute();
 
             pDialog = new ProgressDialog(getActivity());
-            pDialog.setMessage("Loading...");
+            pDialog.setMessage("Loading Movies...");
             pDialog.show();
 
         }
@@ -260,8 +269,8 @@ public class MoviesGridFragment extends Fragment {
                 pDialog.dismiss();
             }
             try {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                ImageAdapter imgAd = new ImageAdapter(getActivity(),fragmentManager,result);
+//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                ImageAdapter imgAd = new ImageAdapter(getActivity(),result);
                 gridView.setAdapter(imgAd);
                 registerForContextMenu(gridView);
 //               if(MainActivity.two_panels) {

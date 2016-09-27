@@ -26,16 +26,16 @@ import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private FragmentManager frgmntManager ;
+    GridItemListener gridItemListener ;
     private static LayoutInflater inflater = null;
     final String MOVIES_POSTER_BASE_URL = "http://image.tmdb.org/t/p/w500";
     ArrayList<Movie> allMoviesArray = null;
     enum MOVIE_IN_FAVOURITE_LIST {YES,NO};
     String [] moviesPostersArray ;
     // Constructor
-    public ImageAdapter(Context c,FragmentManager f,ArrayList<Movie> moviesArray){
+    public ImageAdapter(Context c,ArrayList<Movie> moviesArray){
         mContext = c;
-        frgmntManager = f;
+        gridItemListener = (GridItemListener) c;
         allMoviesArray = moviesArray;
         inflater = ( LayoutInflater )c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -63,31 +63,32 @@ public class ImageAdapter extends BaseAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Bundle detailedMovieFragment = new Bundle();
-                    detailedMovieFragment.putString("id", String.valueOf(allMoviesArray.get(position).getID()));
-                    detailedMovieFragment.putString("title",allMoviesArray.get(position).getTitle());
-                    detailedMovieFragment.putString("backdrop_path",allMoviesArray.get(position).getBackpath());
-                    detailedMovieFragment.putString("overview",allMoviesArray.get(position).getOverview());
-                    detailedMovieFragment.putString("release_date", allMoviesArray.get(position).getReleasedate());
-                    detailedMovieFragment.putString("vote_average", allMoviesArray.get(position).getRate());
-                    detailedMovieFragment.putString("poster_path",allMoviesArray.get(position).getPoster());
-
-                    MovieDetailsFragment mvDetailsFrgment = new MovieDetailsFragment();
-                    mvDetailsFrgment.setArguments(detailedMovieFragment);
-                    FragmentManager fragmentManager = frgmntManager;
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    int detailed_fragment_id = R.id.container;
-                    if(MainActivity.two_panels){
-                        detailed_fragment_id = R.id.fl2;
-                    }
-                    fragmentTransaction
-                            .replace(detailed_fragment_id, mvDetailsFrgment)
-                            .commit();
-                }catch (Exception e)
-                {
-                    e.printStackTrace();
-                }
+                gridItemListener.onItemClicked(allMoviesArray.get(position));
+//                try {
+//                    Bundle detailedMovieFragment = new Bundle();
+//                    detailedMovieFragment.putString("id", String.valueOf(allMoviesArray.get(position).getID()));
+//                    detailedMovieFragment.putString("title",allMoviesArray.get(position).getTitle());
+//                    detailedMovieFragment.putString("backdrop_path",allMoviesArray.get(position).getBackpath());
+//                    detailedMovieFragment.putString("overview",allMoviesArray.get(position).getOverview());
+//                    detailedMovieFragment.putString("release_date", allMoviesArray.get(position).getReleasedate());
+//                    detailedMovieFragment.putString("vote_average", allMoviesArray.get(position).getRate());
+//                    detailedMovieFragment.putString("poster_path",allMoviesArray.get(position).getPoster());
+//
+//                    MovieDetailsFragment mvDetailsFrgment = new MovieDetailsFragment();
+//                    mvDetailsFrgment.setArguments(detailedMovieFragment);
+//                    FragmentManager fragmentManager = frgmntManager;
+//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                    int detailed_fragment_id = R.id.container;
+//                    if(MainActivity.two_panels){
+//                        detailed_fragment_id = R.id.fl2;
+//                    }
+//                    fragmentTransaction
+//                            .replace(detailed_fragment_id, mvDetailsFrgment)
+//                            .commit();
+//                }catch (Exception e)
+//                {
+//                    e.printStackTrace();
+//                }
 
             }
         });

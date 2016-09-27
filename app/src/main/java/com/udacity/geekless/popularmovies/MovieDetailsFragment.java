@@ -51,25 +51,35 @@ import java.util.ResourceBundle;
 
 public class MovieDetailsFragment extends Fragment {
 
-    FragmentTransaction fragmentTransaction ;
+    ProgressDialog pDialog;
+    FragmentTransaction fragmentTransaction;
     List<Review> arrayOfReviews;
     List<Trailer> arrayofTrailers;
-    ListView review_listView , trailers_listview;
-    Activity mContext ;
-    View rootView ;
+    ListView review_listView, trailers_listview;
+    Activity mContext;
+    View rootView;
     ShareActionProvider mShareActionProvider;
     // movie details
-    Movie currentMovie ;
-    TextView reviewTXT ;
+    Movie currentMovie;
+    TextView reviewTXT;
     TextView trailerTXT;
+
+    String movieID ;
+    String movieTitle;
+    String movieOverview;
+    String movieReleaseYear;
+    String movieRate;
+    String movieBackDropPath ;
+    String moviePoster;
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
         setHasOptionsMenu(true);
 //
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -81,37 +91,63 @@ public class MovieDetailsFragment extends Fragment {
         mShareActionProvider =
                 (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
-
     }
-    private Intent createShareMovieIntent() {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-                    shareIntent.setType("text/plain");
-                    String movieShareString = currentMovie.getTitle() + " \n#popularMovies\n";
-                    try {
-                        movieShareString+="https://www.youtube.com/embed/"+arrayofTrailers.get(0).getKey();
 
-                    }catch (Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
-                    shareIntent.putExtra(Intent.EXTRA_TEXT,movieShareString);
-                    return shareIntent;
-                }
+    @Override
+    public void onStop() {
+        super.onStop();
+//        if (null != pDialog && pDialog.isShowing()) {
+//            pDialog.dismiss();
+//        }
+    }
+
+    private Intent createShareMovieIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        String movieShareString = currentMovie.getTitle() + " \n#popularMovies\n";
+        try {
+            movieShareString += "https://www.youtube.com/embed/" + arrayofTrailers.get(0).getKey();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        shareIntent.putExtra(Intent.EXTRA_TEXT, movieShareString);
+        return shareIntent;
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        try {
+            mContext = getActivity();
+        }catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_movie_details, container, false);
-        String movieID =getArguments().getString("id");
-        String movieTitle = getArguments().getString("title");
-        String movieOverview = getArguments().getString("overview");
-        String movieReleaseYear = getReleaseYearFromFullDate(getArguments().getString("release_date"));
-        String movieRate = getArguments().getString("vote_average");
-        String movieBackDropPath =getArguments().getString("backdrop_path");
-        String moviePoster =getArguments().getString("poster_path");
+        if(getArguments()!=null) {
+             movieID = getArguments().getString("id");
+             movieTitle = getArguments().getString("title");
+             movieOverview = getArguments().getString("overview");
+             movieReleaseYear = getReleaseYearFromFullDate(getArguments().getString("release_date"));
+             movieRate = getArguments().getString("vote_average");
+             movieBackDropPath = getArguments().getString("backdrop_path");
+             moviePoster = getArguments().getString("poster_path");
+        }
+        else
+        {
+            movieID =  getActivity().getIntent().getExtras().getString("id");
+            movieTitle = getActivity().getIntent().getExtras().getString("title");
+            movieOverview =  getActivity().getIntent().getExtras().getString("overview");
+            movieReleaseYear = getReleaseYearFromFullDate( getActivity().getIntent().getExtras().getString("release_date"));
+            movieRate =  getActivity().getIntent().getExtras().getString("vote_average");
+            movieBackDropPath =  getActivity().getIntent().getExtras().getString("backdrop_path");
+            moviePoster =  getActivity().getIntent().getExtras().getString("poster_path");
+        }
+
 
         currentMovie = new Movie();
         currentMovie.setID(Integer.parseInt(movieID));
@@ -127,37 +163,36 @@ public class MovieDetailsFragment extends Fragment {
         TextView movie_overview_txtview = (TextView) rootView.findViewById(R.id.movie_overview_txtview);
         TextView movie_release_year_txtview = (TextView) rootView.findViewById(R.id.movie_release_year_txtview);
         TextView movie_rate_txtview = (TextView) rootView.findViewById(R.id.movie_rate_txtview);
-        reviewTXT =  (TextView) rootView.findViewById(R.id.movie_reviews_separator);
-        trailerTXT =  (TextView) rootView.findViewById(R.id.movie_trailer_separator);
+        reviewTXT = (TextView) rootView.findViewById(R.id.movie_reviews_separator);
+        trailerTXT = (TextView) rootView.findViewById(R.id.movie_trailer_separator);
         review_listView = (ListView) rootView.findViewById(R.id.reviews_listview);
         trailers_listview = (ListView) rootView.findViewById(R.id.trailers_listview);
         try {
             if (Utils.isNetworkAvailable(getActivity())) {
                 Picasso.with(getActivity()).load(movieBackDropPath).into(movie_backdrop_path_imgview);
                 new FetchMovieReview().execute(movieID);
-                new FetchMovieTrailer().execute(movieID);
+
             } else {
                 Utils.showToast(getActivity(), "No Network Connection!!!");
                 reviewTXT.setVisibility(View.GONE);
                 trailerTXT.setVisibility(View.GONE);
                 movie_backdrop_path_imgview.setImageResource(R.drawable.movie);
             }
-        }catch (Exception ex)
-        {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         movie_title_txtview.setText(movieTitle);
         movie_overview_txtview.setText(movieOverview);
         movie_release_year_txtview.setText(movieReleaseYear);
-        movie_rate_txtview.setText(movieRate+"/10");
+        movie_rate_txtview.setText(movieRate + "/10");
 
         review_listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
                 Review oneReview = arrayOfReviews.get(position);
-                Uri adress= Uri.parse(oneReview.getLink());
-                Intent browser= new Intent(Intent.ACTION_VIEW, adress);
+                Uri adress = Uri.parse(oneReview.getLink());
+                Intent browser = new Intent(Intent.ACTION_VIEW, adress);
                 startActivity(browser);
             }
 
@@ -167,8 +202,8 @@ public class MovieDetailsFragment extends Fragment {
             public void onItemClick(AdapterView<?> arg0, View arg1, int position,
                                     long arg3) {
                 Trailer oneReview = arrayofTrailers.get(position);
-                Uri adress= Uri.parse("https://www.youtube.com/embed/"+oneReview.getKey());
-                Intent browser= new Intent(Intent.ACTION_VIEW, adress);
+                Uri adress = Uri.parse("https://www.youtube.com/embed/" + oneReview.getKey());
+                Intent browser = new Intent(Intent.ACTION_VIEW, adress);
                 startActivity(browser);
             }
 
@@ -182,24 +217,21 @@ public class MovieDetailsFragment extends Fragment {
             }
         });
         review_listView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event)
-            {
+            public boolean onTouch(View v, MotionEvent event) {
                 // Disallow the touch request for parent scroll on touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }
         });
         trailers_listview.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event)
-            {
+            public boolean onTouch(View v, MotionEvent event) {
                 // Disallow the touch request for parent scroll on touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
             }
         });
         movie_overview_txtview.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event)
-            {
+            public boolean onTouch(View v, MotionEvent event) {
                 // Disallow the touch request for parent scroll on touch of child view
                 v.getParent().requestDisallowInterceptTouchEvent(true);
                 return false;
@@ -211,15 +243,14 @@ public class MovieDetailsFragment extends Fragment {
 
     class FetchMovieReview extends AsyncTask<String, Void, List<Review>> {
         private final String LOG_TAG = FetchMovieReview.class.getSimpleName();
-        ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pDialog = new ProgressDialog(mContext);
-            pDialog.setMessage("Loading...");
-            pDialog.show();
+//            pDialog = new ProgressDialog(mContext);
+//            pDialog.setMessage("Loading Reviews...");
+//            pDialog.show();
 
         }
 
@@ -234,8 +265,8 @@ public class MovieDetailsFragment extends Fragment {
                         "http://api.themoviedb.org/3/movie/";
                 final String API_KEY_PARAM = "api_key";
                 final String MOVIE_ID_PARAM = params[0];
-                final String MOVIES_API_KEY="5e44fc66144f9fc395dbce0ede660dfe";
-                MOVIES_BASE_URL +=MOVIE_ID_PARAM +"/reviews?";
+                final String MOVIES_API_KEY = "5e44fc66144f9fc395dbce0ede660dfe";
+                MOVIES_BASE_URL += MOVIE_ID_PARAM + "/reviews?";
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY_PARAM, MOVIES_API_KEY)
@@ -276,12 +307,11 @@ public class MovieDetailsFragment extends Fragment {
                     }
                 }
             }
-            List<Review> temp ;
+            List<Review> temp;
             try {
-                temp =  getMovieArrayReviewsFromJson(movieReviews);
-                return  temp;
-            }
-            catch (Exception e) {
+                temp = getMovieArrayReviewsFromJson(movieReviews);
+                return temp;
+            } catch (Exception e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
                 return null;
@@ -290,16 +320,15 @@ public class MovieDetailsFragment extends Fragment {
 
         }
 
-        private List<Review> getMovieArrayReviewsFromJson(String results)
-        {
-            List<Review> moviesReviesList  = new ArrayList<Review>();
+        private List<Review> getMovieArrayReviewsFromJson(String results) {
+            List<Review> moviesReviesList = new ArrayList<Review>();
             JSONArray moviesArray = null;
             JSONObject moviesJson = null;
             try {
                 final String MOVIES_PAGE_RESULTS = "results";
                 moviesJson = new JSONObject(results);
                 moviesArray = moviesJson.getJSONArray(MOVIES_PAGE_RESULTS);
-                for (int i=0;i<moviesArray.length();i++) {
+                for (int i = 0; i < moviesArray.length(); i++) {
                     Review reviewObj = new Review();
                     reviewObj.setId(moviesArray.getJSONObject(i).getString("id"));
                     reviewObj.setDesc(moviesArray.getJSONObject(i).getString("content"));
@@ -307,8 +336,7 @@ public class MovieDetailsFragment extends Fragment {
                     reviewObj.setTitle(moviesArray.getJSONObject(i).getString("author"));
                     moviesReviesList.add(reviewObj);
                 }
-            }catch (JSONException ex)
-            {
+            } catch (JSONException ex) {
                 ex.printStackTrace();
                 return null;
             }
@@ -319,34 +347,37 @@ public class MovieDetailsFragment extends Fragment {
         protected void onPostExecute(List<Review> result) {
 //            super.onPostExecute();
             arrayOfReviews = result;
-            if (null != pDialog && pDialog.isShowing()) {
-                pDialog.dismiss();
-            }
+//            if (null != pDialog && pDialog.isShowing()) {
+//                pDialog.dismiss();
+//            }
 
             if (null == result || result.size() == 0) {
-                  Utils.showToast(mContext,"There are no reviews for this movie !!!");
-                  reviewTXT.setVisibility(View.GONE);
+                Utils.showToast(mContext, "There are no reviews for this movie !!!");
+                reviewTXT.setVisibility(View.GONE);
             } else {
 
                 ReviewAdapter objAdapter = new ReviewAdapter(mContext,
-                R.layout.review_item, result);
+                        R.layout.review_item, result);
                 review_listView.setAdapter(objAdapter);
 
             }
+            new FetchMovieTrailer().execute(String.valueOf(currentMovie.getID()));
 
         }
     }
+
     class FetchMovieTrailer extends AsyncTask<String, Void, List<Trailer>> {
         private final String LOG_TAG = FetchMovieReview.class.getSimpleName();
-        ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+//
+//
+//            pDialog = new ProgressDialog(mContext);
+//            pDialog.setMessage("Loading Trailers...");
+//            pDialog.show();
 
-            pDialog = new ProgressDialog(mContext);
-            pDialog.setMessage("Loading...");
-            pDialog.show();
 
         }
 
@@ -361,8 +392,8 @@ public class MovieDetailsFragment extends Fragment {
                         "http://api.themoviedb.org/3/movie/";
                 final String API_KEY_PARAM = "api_key";
                 final String MOVIE_ID_PARAM = params[0];
-                final String MOVIES_API_KEY="5e44fc66144f9fc395dbce0ede660dfe";
-                MOVIES_BASE_URL +=MOVIE_ID_PARAM +"/videos?";
+                final String MOVIES_API_KEY = "5e44fc66144f9fc395dbce0ede660dfe";
+                MOVIES_BASE_URL += MOVIE_ID_PARAM + "/videos?";
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
                         .appendQueryParameter(API_KEY_PARAM, MOVIES_API_KEY)
@@ -403,12 +434,11 @@ public class MovieDetailsFragment extends Fragment {
                     }
                 }
             }
-            List<Trailer> temp ;
+            List<Trailer> temp;
             try {
-                temp =  getMovieArrayTrailersFromJson(movieTrailers);
-                return  temp;
-            }
-            catch (Exception e) {
+                temp = getMovieArrayTrailersFromJson(movieTrailers);
+                return temp;
+            } catch (Exception e) {
                 Log.e(LOG_TAG, e.getMessage(), e);
                 e.printStackTrace();
                 return null;
@@ -417,16 +447,15 @@ public class MovieDetailsFragment extends Fragment {
 
         }
 
-        private List<Trailer> getMovieArrayTrailersFromJson(String results)
-        {
-            List<Trailer> moviesTrailersList  = new ArrayList<Trailer>();
+        private List<Trailer> getMovieArrayTrailersFromJson(String results) {
+            List<Trailer> moviesTrailersList = new ArrayList<Trailer>();
             JSONArray moviesArray = null;
             JSONObject moviesJson = null;
             try {
                 final String MOVIES_PAGE_RESULTS = "results";
                 moviesJson = new JSONObject(results);
                 moviesArray = moviesJson.getJSONArray(MOVIES_PAGE_RESULTS);
-                for (int i=0;i<moviesArray.length();i++) {
+                for (int i = 0; i < moviesArray.length(); i++) {
                     Trailer trailerObj = new Trailer();
                     trailerObj.setId(moviesArray.getJSONObject(i).getString("id"));
                     trailerObj.setKey(moviesArray.getJSONObject(i).getString("key"));
@@ -435,8 +464,7 @@ public class MovieDetailsFragment extends Fragment {
                     trailerObj.setSite(moviesArray.getJSONObject(i).getString("site"));
                     moviesTrailersList.add(trailerObj);
                 }
-            }catch (JSONException ex)
-            {
+            } catch (JSONException ex) {
                 ex.printStackTrace();
                 return null;
             }
@@ -447,12 +475,12 @@ public class MovieDetailsFragment extends Fragment {
         protected void onPostExecute(List<Trailer> result) {
 //            super.onPostExecute();
             arrayofTrailers = result;
-            if (null != pDialog && pDialog.isShowing()) {
-                pDialog.dismiss();
-            }
+//            if (null != pDialog && pDialog.isShowing()) {
+//                pDialog.dismiss();
+//            }
 
             if (null == result || result.size() == 0) {
-                Utils.showToast(mContext,"There are no trailers for this movie !!!");
+                Utils.showToast(mContext, "There are no trailers for this movie !!!");
 
                 trailerTXT.setVisibility(View.GONE);
             } else {
@@ -461,16 +489,13 @@ public class MovieDetailsFragment extends Fragment {
                         R.layout.trailer__item, result);
                 try {
                     trailers_listview.setAdapter(objAdapter);
-                }catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
 
             }
-            if (mShareActionProvider != null ) {
+            if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareMovieIntent());
-            } else {
-                Utils.showToast(getActivity(),"Share Action Provider is null?");
             }
 
         }
@@ -478,6 +503,6 @@ public class MovieDetailsFragment extends Fragment {
 
 
     private String getReleaseYearFromFullDate(String fullDate) {
-        return  fullDate.split("-")[0];
+        return fullDate.split("-")[0];
     }
 }
