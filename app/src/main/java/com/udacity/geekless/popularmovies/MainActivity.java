@@ -3,6 +3,7 @@ package com.udacity.geekless.popularmovies;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.FragmentManager;
@@ -15,7 +16,9 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GridItemListener{
     public static boolean two_panels = false;
+    public static String FILTER_TYPE = null;
     FragmentManager fragmentManager;
+    public static final String MY_PREFS_VAR = "localPreferences";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try {
@@ -36,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
                         .replace(R.id.container, new OfflineFragment())
                         .commit();
             }
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_VAR, MODE_WORLD_READABLE).edit();
+            editor.putString("filter_type", null);
+            editor.apply();
         }catch (Exception ex)
         {
             ex.printStackTrace();
@@ -87,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
             detailedMovie.putExtra("title",movie.getTitle());
             detailedMovie.putExtra("backdrop_path",movie.getBackpath());
             detailedMovie.putExtra("overview",movie.getOverview());
+            detailedMovie.putExtra("vote_average",movie.getRate());
             detailedMovie.putExtra("release_date", movie.getReleasedate());
             detailedMovie.putExtra("poster_path",movie.getPoster());
             startActivity(detailedMovie);

@@ -96,9 +96,17 @@ public class MovieDetailsFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-//        if (null != pDialog && pDialog.isShowing()) {
-//            pDialog.dismiss();
-//        }
+        if (null != pDialog && pDialog.isShowing()) {
+            pDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (null != pDialog && pDialog.isShowing()) {
+            pDialog.dismiss();
+        }
     }
 
     private Intent createShareMovieIntent() {
@@ -248,9 +256,9 @@ public class MovieDetailsFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-//            pDialog = new ProgressDialog(mContext);
-//            pDialog.setMessage("Loading Reviews...");
-//            pDialog.show();
+            pDialog = new ProgressDialog(mContext);
+            pDialog.setMessage("Loading Reviews...");
+            pDialog.show();
 
         }
 
@@ -347,9 +355,9 @@ public class MovieDetailsFragment extends Fragment {
         protected void onPostExecute(List<Review> result) {
 //            super.onPostExecute();
             arrayOfReviews = result;
-//            if (null != pDialog && pDialog.isShowing()) {
-//                pDialog.dismiss();
-//            }
+            if (null != pDialog && pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
 
             if (null == result || result.size() == 0) {
                 Utils.showToast(mContext, "There are no reviews for this movie !!!");
@@ -362,7 +370,6 @@ public class MovieDetailsFragment extends Fragment {
 
             }
             new FetchMovieTrailer().execute(String.valueOf(currentMovie.getID()));
-
         }
     }
 
@@ -372,13 +379,9 @@ public class MovieDetailsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//
-//
-//            pDialog = new ProgressDialog(mContext);
-//            pDialog.setMessage("Loading Trailers...");
-//            pDialog.show();
-
-
+            pDialog = new ProgressDialog(mContext);
+            pDialog.setMessage("Loading Trailers...");
+            pDialog.show();
         }
 
         @Override
@@ -473,11 +476,10 @@ public class MovieDetailsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(List<Trailer> result) {
-//            super.onPostExecute();
             arrayofTrailers = result;
-//            if (null != pDialog && pDialog.isShowing()) {
-//                pDialog.dismiss();
-//            }
+            if (null != pDialog && pDialog.isShowing()) {
+                pDialog.dismiss();
+            }
 
             if (null == result || result.size() == 0) {
                 Utils.showToast(mContext, "There are no trailers for this movie !!!");

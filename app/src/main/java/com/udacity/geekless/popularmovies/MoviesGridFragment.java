@@ -1,6 +1,8 @@
 package com.udacity.geekless.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,16 +33,19 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Manifest;
 
 public class MoviesGridFragment extends Fragment {
 
     View rootView ;
     ProgressDialog pDialog;
     GridView gridView;
-    String MOVIES_FILTER_POPULAR = "popular";
-    String MOVIES_FILTER_TOP_RATED = "top_rated";
-    String MOVIES_FILTER_NOW_PLAYING = "now_playing";
-    String MOVIES_FILTER_UPCOMING = "upcoming";
+    public static String MOVIES_FILTER_POPULAR = "popular";
+    public static String MOVIES_FILTER_TOP_RATED = "top_rated";
+    public static String MOVIES_FILTER_NOW_PLAYING = "now_playing";
+    public static String MOVIES_FILTER_UPCOMING = "upcoming";
+
+    SharedPreferences.Editor editor;
     public MoviesGridFragment() {
         // Required empty public constructor
     }
@@ -55,12 +60,22 @@ public class MoviesGridFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.v("3m karim","aho sad2tny");
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
         gridView  = (GridView) rootView.findViewById(R.id.poster_grid_view);
         FetchMoviesTask weatherTask = new FetchMoviesTask();
-        weatherTask.execute(MOVIES_FILTER_POPULAR);
+        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR, Context.MODE_PRIVATE);
+        String FILTER_TYPE = MainActivity.FILTER_TYPE;
+//        Utils.showToast(getActivity(),"restored text "+restoredText);
+        if (FILTER_TYPE != null) {
+//            String FILTER_TYPE = prefs.getString("filter_type", "No filter defined");//"No name defined" is the default value.
+            weatherTask.execute(FILTER_TYPE);
+        }
+        else{
+//            editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_WORLD_READABLE).edit();
+//            editor.putString("filter_type",MOVIES_FILTER_POPULAR);
+            weatherTask.execute(MOVIES_FILTER_POPULAR);
+        }
         return rootView;
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -93,6 +108,9 @@ public class MoviesGridFragment extends Fragment {
         }
         if (id == R.id.action_popular) {
             if (Utils.isNetworkAvailable(getActivity())) {
+//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
+//                editor.putString("filter_type",MOVIES_FILTER_POPULAR);
+                MainActivity.FILTER_TYPE = MOVIES_FILTER_POPULAR;
                 weatherTask.execute(MOVIES_FILTER_POPULAR);
             }
             else
@@ -105,6 +123,9 @@ public class MoviesGridFragment extends Fragment {
         else if(id == R.id.action_toprated)
         {
             if (Utils.isNetworkAvailable(getActivity())) {
+//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
+//                editor.putString("filter_type",MOVIES_FILTER_TOP_RATED);
+                MainActivity.FILTER_TYPE = MOVIES_FILTER_TOP_RATED;
                 weatherTask.execute(MOVIES_FILTER_TOP_RATED);
             }
             else
@@ -117,6 +138,9 @@ public class MoviesGridFragment extends Fragment {
         else if(id == R.id.action_now_playing)
         {
             if (Utils.isNetworkAvailable(getActivity())) {
+//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
+//                editor.putString("filter_type",MOVIES_FILTER_NOW_PLAYING);
+                MainActivity.FILTER_TYPE = MOVIES_FILTER_NOW_PLAYING;
                 weatherTask.execute(MOVIES_FILTER_NOW_PLAYING);
             }
             else
@@ -129,6 +153,9 @@ public class MoviesGridFragment extends Fragment {
         else if(id == R.id.action_upcoming)
         {
             if (Utils.isNetworkAvailable(getActivity())) {
+//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
+//                editor.putString("filter_type",MOVIES_FILTER_UPCOMING);
+                MainActivity.FILTER_TYPE = MOVIES_FILTER_UPCOMING;
                 weatherTask.execute(MOVIES_FILTER_UPCOMING);
             }
             else
