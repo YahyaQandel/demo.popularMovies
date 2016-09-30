@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
     @Override
     public void onItemClicked(Movie movie) {
         if(two_panels){
+
             Bundle detailedMovieFragment = new Bundle();
             detailedMovieFragment.putString("id", String.valueOf(movie.getID()));
             detailedMovieFragment.putString("title",movie.getTitle());
@@ -81,9 +82,11 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
             detailedMovieFragment.putString("vote_average", movie.getRate());
             detailedMovieFragment.putString("poster_path",movie.getPoster());
             FragmentManager fragmentManager = getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            MovieDetailsFragment detailed_fragment = new MovieDetailsFragment();
+            detailed_fragment.setArguments(detailedMovieFragment);
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction
-                            .replace(R.id.detailedContainer, new MovieDetailsFragment())
+                            .replace(R.id.fl2, detailed_fragment)
                             .commit();
 
         }

@@ -44,6 +44,7 @@ public class MoviesGridFragment extends Fragment {
     public static String MOVIES_FILTER_TOP_RATED = "top_rated";
     public static String MOVIES_FILTER_NOW_PLAYING = "now_playing";
     public static String MOVIES_FILTER_UPCOMING = "upcoming";
+    public static String MOVIES_FILTER_FAVORITE = "favorite";
 
     SharedPreferences.Editor editor;
     public MoviesGridFragment() {
@@ -69,7 +70,21 @@ public class MoviesGridFragment extends Fragment {
 //        Utils.showToast(getActivity(),"restored text "+restoredText);
         if (FILTER_TYPE != null) {
 //            String FILTER_TYPE = prefs.getString("filter_type", "No filter defined");//"No name defined" is the default value.
-            weatherTask.execute(FILTER_TYPE);
+            if(FILTER_TYPE!=MOVIES_FILTER_FAVORITE) {
+                weatherTask.execute(FILTER_TYPE);
+            }else
+            {
+                DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                ArrayList<Movie> movies = db.getAllMovies();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                ImageAdapter imgAd = new ImageAdapter(getActivity(),movies);
+                try {
+                    gridView.setAdapter(imgAd);
+                }catch (Exception ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
         }
         else{
 //            editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_WORLD_READABLE).edit();
@@ -95,6 +110,7 @@ public class MoviesGridFragment extends Fragment {
         FetchMoviesTask weatherTask = new FetchMoviesTask();
         int id = item.getItemId();
         if (id == R.id.action_favourite) {
+            MainActivity.FILTER_TYPE = MOVIES_FILTER_FAVORITE;
             DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
             ArrayList<Movie> movies = db.getAllMovies();
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
