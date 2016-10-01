@@ -1,11 +1,13 @@
 package com.udacity.geekless.popularmovies;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -40,6 +42,7 @@ public class MoviesGridFragment extends Fragment {
     View rootView ;
     ProgressDialog pDialog;
     GridView gridView;
+    Activity parentActivity;
     public static String MOVIES_FILTER_POPULAR = "popular";
     public static String MOVIES_FILTER_TOP_RATED = "top_rated";
     public static String MOVIES_FILTER_NOW_PLAYING = "now_playing";
@@ -57,6 +60,34 @@ public class MoviesGridFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        parentActivity =  getActivity();
+        FetchMoviesTask movieTask = new FetchMoviesTask();
+        String FILTER_TYPE = MainActivity.FILTER_TYPE;
+        if (Utils.isNetworkAvailable(parentActivity)) {
+            if (FILTER_TYPE != null) {
+                if (FILTER_TYPE != MOVIES_FILTER_FAVORITE) {
+                    movieTask.execute(FILTER_TYPE);
+                } else {
+                    DatabaseHandler db = new DatabaseHandler(parentActivity.getApplicationContext());
+                    ArrayList<Movie> movies = db.getAllMovies();
+                    ImageAdapter imgAd = new ImageAdapter(parentActivity, movies);
+                    try {
+                        gridView.setAdapter(imgAd);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            } else {
+                movieTask.execute(MOVIES_FILTER_POPULAR);
+            }
+        }else
+        {
+            Utils.showToast(parentActivity, "No Network Connection!!!");
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,33 +95,6 @@ public class MoviesGridFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.movie_poster_grid_layout, container, false);
         gridView  = (GridView) rootView.findViewById(R.id.poster_grid_view);
-        FetchMoviesTask weatherTask = new FetchMoviesTask();
-        SharedPreferences prefs = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR, Context.MODE_PRIVATE);
-        String FILTER_TYPE = MainActivity.FILTER_TYPE;
-//        Utils.showToast(getActivity(),"restored text "+restoredText);
-        if (FILTER_TYPE != null) {
-//            String FILTER_TYPE = prefs.getString("filter_type", "No filter defined");//"No name defined" is the default value.
-            if(FILTER_TYPE!=MOVIES_FILTER_FAVORITE) {
-                weatherTask.execute(FILTER_TYPE);
-            }else
-            {
-                DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-                ArrayList<Movie> movies = db.getAllMovies();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                ImageAdapter imgAd = new ImageAdapter(getActivity(),movies);
-                try {
-                    gridView.setAdapter(imgAd);
-                }catch (Exception ex)
-                {
-                    ex.printStackTrace();
-                }
-            }
-        }
-        else{
-//            editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_WORLD_READABLE).edit();
-//            editor.putString("filter_type",MOVIES_FILTER_POPULAR);
-            weatherTask.execute(MOVIES_FILTER_POPULAR);
-        }
         return rootView;
     }
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -107,14 +111,13 @@ public class MoviesGridFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        FetchMoviesTask weatherTask = new FetchMoviesTask();
+        FetchMoviesTask movieAsyncTask = new FetchMoviesTask();
         int id = item.getItemId();
         if (id == R.id.action_favourite) {
             MainActivity.FILTER_TYPE = MOVIES_FILTER_FAVORITE;
-            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            DatabaseHandler db = new DatabaseHandler(parentActivity.getApplicationContext());
             ArrayList<Movie> movies = db.getAllMovies();
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            ImageAdapter imgAd = new ImageAdapter(getActivity(),movies);
+            ImageAdapter imgAd = new ImageAdapter(parentActivity,movies);
             try {
                 gridView.setAdapter(imgAd);
             }catch (Exception ex)
@@ -123,60 +126,51 @@ public class MoviesGridFragment extends Fragment {
             }
         }
         if (id == R.id.action_popular) {
-            if (Utils.isNetworkAvailable(getActivity())) {
-//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
-//                editor.putString("filter_type",MOVIES_FILTER_POPULAR);
+            if (Utils.isNetworkAvailable(parentActivity)) {
                 MainActivity.FILTER_TYPE = MOVIES_FILTER_POPULAR;
-                weatherTask.execute(MOVIES_FILTER_POPULAR);
+                movieAsyncTask.execute(MOVIES_FILTER_POPULAR);
             }
             else
             {
-                Utils.showToast(getActivity(), "No Network Connection!!!");
-//                goToOfflineMode();
+                Utils.showToast(parentActivity, "No Network Connection!!!");
             }
             return true;
         }
         else if(id == R.id.action_toprated)
         {
-            if (Utils.isNetworkAvailable(getActivity())) {
-//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
-//                editor.putString("filter_type",MOVIES_FILTER_TOP_RATED);
+            if (Utils.isNetworkAvailable(parentActivity)) {
                 MainActivity.FILTER_TYPE = MOVIES_FILTER_TOP_RATED;
-                weatherTask.execute(MOVIES_FILTER_TOP_RATED);
+                movieAsyncTask.execute(MOVIES_FILTER_TOP_RATED);
             }
             else
             {
-                Utils.showToast(getActivity(), "No Network Connection!!!");
+                Utils.showToast(parentActivity, "No Network Connection!!!");
 //                goToOfflineMode();
             }
             return true;
         }
         else if(id == R.id.action_now_playing)
         {
-            if (Utils.isNetworkAvailable(getActivity())) {
-//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
-//                editor.putString("filter_type",MOVIES_FILTER_NOW_PLAYING);
+            if (Utils.isNetworkAvailable(parentActivity)) {
                 MainActivity.FILTER_TYPE = MOVIES_FILTER_NOW_PLAYING;
-                weatherTask.execute(MOVIES_FILTER_NOW_PLAYING);
+                movieAsyncTask.execute(MOVIES_FILTER_NOW_PLAYING);
             }
             else
             {
-                Utils.showToast(getActivity(), "No Network Connection!!!");
+                Utils.showToast(parentActivity, "No Network Connection!!!");
 //                goToOfflineMode();
             }
             return true;
         }
         else if(id == R.id.action_upcoming)
         {
-            if (Utils.isNetworkAvailable(getActivity())) {
-//                editor = getActivity().getSharedPreferences(MainActivity.MY_PREFS_VAR,Context.MODE_PRIVATE).edit();
-//                editor.putString("filter_type",MOVIES_FILTER_UPCOMING);
+            if (Utils.isNetworkAvailable(parentActivity)) {;
                 MainActivity.FILTER_TYPE = MOVIES_FILTER_UPCOMING;
-                weatherTask.execute(MOVIES_FILTER_UPCOMING);
+                movieAsyncTask.execute(MOVIES_FILTER_UPCOMING);
             }
             else
             {
-                Utils.showToast(getActivity(), "No Network Connection!!!");
+                Utils.showToast(parentActivity, "No Network Connection!!!");
 //                goToOfflineMode();
             }
             return true;
@@ -199,7 +193,7 @@ public class MoviesGridFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            pDialog = new ProgressDialog(getActivity());
+            pDialog = new ProgressDialog(parentActivity);
             pDialog.setMessage("Loading Movies...");
             pDialog.show();
 
@@ -217,7 +211,7 @@ public class MoviesGridFragment extends Fragment {
                         "http://api.themoviedb.org/3/movie/";
                 final String API_KEY_PARAM = "api_key";
                 final String API_FILTER_PARAM = params[0];
-                final String MOVIES_API_KEY="5e44fc66144f9fc395dbce0ede660dfe";
+                final String MOVIES_API_KEY=BuildConfig.API_KEY;
                 MOVIES_BASE_URL +=API_FILTER_PARAM +"?";
 
 
@@ -312,16 +306,9 @@ public class MoviesGridFragment extends Fragment {
                 pDialog.dismiss();
             }
             try {
-//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                ImageAdapter imgAd = new ImageAdapter(getActivity(),result);
+                ImageAdapter imgAd = new ImageAdapter(parentActivity,result);
                 gridView.setAdapter(imgAd);
                 registerForContextMenu(gridView);
-//               if(MainActivity.two_panels) {
-//                    gridView.requestFocusFromTouch();
-//                    gridView.setSelection(0);
-//                    gridView.performItemClick(gridView,0,R.id.poster_grid_view);
-//                    imgAd.notifyDataSetChanged();
-//                }
             }catch (Exception ex){
                 ex.printStackTrace();
 

@@ -1,8 +1,11 @@
 package com.udacity.geekless.popularmovies;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
@@ -18,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
     public static boolean two_panels = false;
     public static String FILTER_TYPE = null;
     FragmentManager fragmentManager;
+    public static Activity MAIN_APP_ACTIVITY ;
     public static final String MY_PREFS_VAR = "localPreferences";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
             SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_VAR, MODE_WORLD_READABLE).edit();
             editor.putString("filter_type", null);
             editor.apply();
+            MAIN_APP_ACTIVITY = this;
         }catch (Exception ex)
         {
             ex.printStackTrace();
@@ -66,7 +71,10 @@ public class MainActivity extends AppCompatActivity implements GridItemListener{
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
-
+        BroadcastReceiver receiver = new NetworkChangeReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("CONNECTIVITY_CHANGE");
+        registerReceiver(receiver,filter);
     }
 
     @Override

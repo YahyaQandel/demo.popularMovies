@@ -17,9 +17,11 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            buildConfigField 'String', 'API_KEY', '"5e44fc66144f9fc395dbce0ede660dfe"'
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            buildConfigField 'String', 'API_KEY', '"5e44fc66144f9fc395dbce0ede660dfe"'
             minifyEnabled false
         }
     }

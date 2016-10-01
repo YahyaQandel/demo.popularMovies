@@ -85,12 +85,17 @@ public class MovieDetailsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.detail_menu, menu);
-
         MenuItem menuItem = menu.findItem(R.id.action_share);
-
         mShareActionProvider =
                 (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+//        i really don't know what is the functionality that it should be implemented here because share is already implemented and setted after
+//        trailer request has been submitted .
+//        what i know that this function is for checking which item selected from menu despite share button functionality already could be defined without this .
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -123,6 +128,7 @@ public class MovieDetailsFragment extends Fragment {
         shareIntent.putExtra(Intent.EXTRA_TEXT, movieShareString);
         return shareIntent;
     }
+
 
 
     @Override
@@ -273,7 +279,7 @@ public class MovieDetailsFragment extends Fragment {
                         "http://api.themoviedb.org/3/movie/";
                 final String API_KEY_PARAM = "api_key";
                 final String MOVIE_ID_PARAM = params[0];
-                final String MOVIES_API_KEY = "5e44fc66144f9fc395dbce0ede660dfe";
+                final String MOVIES_API_KEY = BuildConfig.API_KEY;
                 MOVIES_BASE_URL += MOVIE_ID_PARAM + "/reviews?";
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
@@ -395,7 +401,7 @@ public class MovieDetailsFragment extends Fragment {
                         "http://api.themoviedb.org/3/movie/";
                 final String API_KEY_PARAM = "api_key";
                 final String MOVIE_ID_PARAM = params[0];
-                final String MOVIES_API_KEY = "5e44fc66144f9fc395dbce0ede660dfe";
+                final String MOVIES_API_KEY = BuildConfig.API_KEY;
                 MOVIES_BASE_URL += MOVIE_ID_PARAM + "/videos?";
 
                 Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
@@ -499,7 +505,6 @@ public class MovieDetailsFragment extends Fragment {
             if (mShareActionProvider != null) {
                 mShareActionProvider.setShareIntent(createShareMovieIntent());
             }
-
         }
     }
 

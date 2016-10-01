@@ -1,10 +1,6 @@
 package com.udacity.geekless.popularmovies;
 
 import android.content.DialogInterface;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
-
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.view.ContextThemeWrapper;
@@ -17,11 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 public class ImageAdapter extends BaseAdapter {
@@ -64,32 +55,6 @@ public class ImageAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 gridItemListener.onItemClicked(allMoviesArray.get(position));
-//                try {
-//                    Bundle detailedMovieFragment = new Bundle();
-//                    detailedMovieFragment.putString("id", String.valueOf(allMoviesArray.get(position).getID()));
-//                    detailedMovieFragment.putString("title",allMoviesArray.get(position).getTitle());
-//                    detailedMovieFragment.putString("backdrop_path",allMoviesArray.get(position).getBackpath());
-//                    detailedMovieFragment.putString("overview",allMoviesArray.get(position).getOverview());
-//                    detailedMovieFragment.putString("release_date", allMoviesArray.get(position).getReleasedate());
-//                    detailedMovieFragment.putString("vote_average", allMoviesArray.get(position).getRate());
-//                    detailedMovieFragment.putString("poster_path",allMoviesArray.get(position).getPoster());
-//
-//                    MovieDetailsFragment mvDetailsFrgment = new MovieDetailsFragment();
-//                    mvDetailsFrgment.setArguments(detailedMovieFragment);
-//                    FragmentManager fragmentManager = frgmntManager;
-//                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//                    int detailed_fragment_id = R.id.container;
-//                    if(MainActivity.two_panels){
-//                        detailed_fragment_id = R.id.fl2;
-//                    }
-//                    fragmentTransaction
-//                            .replace(detailed_fragment_id, mvDetailsFrgment)
-//                            .commit();
-//                }catch (Exception e)
-//                {
-//                    e.printStackTrace();
-//                }
-
             }
         });
         imageView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -104,8 +69,6 @@ public class ImageAdapter extends BaseAdapter {
                    Dialgo_msg = MSG_REMV;
                 }
                 else {
-//                    db.addMovie(currentMovie);
-//                    Utils.showToast(getActivity(), "Movie added to favourite !!!");
                     Dialgo_msg = MSG_ADD;
                 }
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
@@ -142,7 +105,17 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return allMoviesArray.size();
+        try {
+            return allMoviesArray.size();
+        }catch (NullPointerException nex)
+        {
+            Utils.showToast(mContext,"No data retrieved");
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Utils.showToast(mContext,"Something wrong happened");
+            return 0;
+        }
     }
-
 }

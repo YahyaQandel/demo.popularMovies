@@ -22,6 +22,11 @@
         <!-- <activity android:name=".ImageAdapterActivity"></activity> -->
         <activity android:name=".OfflineFragment" />
         <activity android:name=".MovieDetailsActivity"></activity>
+        <receiver android:name=".NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
